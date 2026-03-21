@@ -135,6 +135,8 @@ Status: Completed (March 29, 2026)
 
 ## Step 1 - Backend Skeleton and Health Surface
 
+Status: Completed (March 29, 2026)
+
 **Goal**: Establish API skeleton and middleware chain.
 
 **Integrations in this step**:
@@ -150,8 +152,8 @@ Status: Completed (March 29, 2026)
 
 **Commit target**: 2 commits
 
-- `Day X - create express app and route wiring`
-- `Day X - add centralized error handling`
+- `Day 2 - create express app and route wiring`
+- `Day 2 - add centralized error handling`
 
 ---
 
@@ -390,7 +392,7 @@ Expected total meaningful commits before submission: **22 to 30**.
 Use this board while implementing:
 
 - [x] Step 0 - Setup and guardrails
-- [ ] Step 1 - Backend skeleton
+- [x] Step 1 - Backend skeleton
 - [ ] Step 2 - DB + TTL cache
 - [ ] Step 3 - GitHub service layer
 - [ ] Step 4 - Scoring engine

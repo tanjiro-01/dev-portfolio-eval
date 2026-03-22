@@ -159,7 +159,7 @@ Status: Completed (March 29, 2026)
 
 ## Step 2 - Database and Cache Model
 
-Status: In Progress (March 29, 2026) - code scaffold complete, awaiting `MONGODB_URI` to verify live Atlas connection.
+Status: Completed (March 29, 2026)
 
 **Goal**: Connect MongoDB and define report cache schema.
 
@@ -395,7 +395,7 @@ Use this board while implementing:
 
 - [x] Step 0 - Setup and guardrails
 - [x] Step 1 - Backend skeleton
-- [ ] Step 2 - DB + TTL cache
+- [x] Step 2 - DB + TTL cache
 - [ ] Step 3 - GitHub service layer
 - [ ] Step 4 - Scoring engine
 - [ ] Step 5 - Profile orchestration

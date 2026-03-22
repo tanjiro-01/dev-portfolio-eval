@@ -159,6 +159,8 @@ Status: Completed (March 29, 2026)
 
 ## Step 2 - Database and Cache Model
 
+Status: In Progress (March 29, 2026) - code scaffold complete, awaiting `MONGODB_URI` to verify live Atlas connection.
+
 **Goal**: Connect MongoDB and define report cache schema.
 
 **Integrations in this step**:
@@ -174,9 +176,9 @@ Status: Completed (March 29, 2026)
 
 **Commit target**: 2 to 3 commits
 
-- `Day X - add mongo connection and report model`
-- `Day X - implement cache middleware with ttl-aware schema`
-- `Day X - add cached profile endpoint`
+- `Day 3 - add mongo connection and report model`
+- `Day 3 - implement cache middleware with ttl-aware schema`
+- `Day 3 - add cached profile endpoint`
 
 ---
 

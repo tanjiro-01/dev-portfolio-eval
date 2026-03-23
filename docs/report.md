@@ -184,6 +184,8 @@ Status: Completed (March 29, 2026)
 
 ## Step 3 - GitHub Service Layer
 
+Status: Completed (March 29, 2026)
+
 **Goal**: Build and isolate all GitHub API calls.
 
 **Integrations in this step**:
@@ -203,8 +205,8 @@ Status: Completed (March 29, 2026)
 
 **Commit target**: 2 commits
 
-- `Day X - add octokit service functions for profile data`
-- `Day X - map github api failures to app-safe errors`
+- `Day 4 - add octokit service functions for profile data`
+- `Day 4 - map github api failures to app-safe errors`
 
 ---
 
@@ -396,7 +398,7 @@ Use this board while implementing:
 - [x] Step 0 - Setup and guardrails
 - [x] Step 1 - Backend skeleton
 - [x] Step 2 - DB + TTL cache
-- [ ] Step 3 - GitHub service layer
+- [x] Step 3 - GitHub service layer
 - [ ] Step 4 - Scoring engine
 - [ ] Step 5 - Profile orchestration
 - [ ] Step 6 - Frontend core

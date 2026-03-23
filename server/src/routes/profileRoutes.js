@@ -1,14 +1,10 @@
 import { Router } from "express";
 
 import checkCache from "../middleware/checkCache.js";
+import { getProfileSummary } from "../controllers/profileController.js";
 
 const router = Router();
 
-router.get("/:username", checkCache, async (req, res) => {
-  return res.status(503).json({
-    message: "Profile generation is not implemented yet. Cache miss.",
-    username: req.params.username,
-  });
-});
+router.get("/:username", checkCache, getProfileSummary);
 
 export default router;

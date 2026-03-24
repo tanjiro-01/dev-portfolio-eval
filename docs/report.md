@@ -212,6 +212,8 @@ Status: Completed (March 29, 2026)
 
 ## Step 4 - Scoring Engine v1 (Deterministic)
 
+Status: Completed (March 29, 2026)
+
 **Goal**: Implement pure scoring functions and overall weighted score.
 
 **Integrations in this step**:
@@ -230,9 +232,9 @@ Status: Completed (March 29, 2026)
 
 **Commit target**: 3 commits
 
-- `Day X - implement activity scoring with 90-day windows`
-- `Day X - implement quality diversity community hiring scorers`
-- `Day X - add weighted overall score aggregation`
+- `Day 4 - implement activity scoring with 90-day windows`
+- `Day 4 - implement quality diversity community hiring scorers`
+- `Day 4 - add weighted overall score aggregation`
 
 ---
 
@@ -399,7 +401,7 @@ Use this board while implementing:
 - [x] Step 1 - Backend skeleton
 - [x] Step 2 - DB + TTL cache
 - [x] Step 3 - GitHub service layer
-- [ ] Step 4 - Scoring engine
+- [x] Step 4 - Scoring engine
 - [ ] Step 5 - Profile orchestration
 - [ ] Step 6 - Frontend core
 - [ ] Step 7 - Report visualizations

@@ -240,6 +240,8 @@ Status: Completed (March 29, 2026)
 
 ## Step 5 - Profile Controller Orchestration
 
+Status: Completed (March 29, 2026)
+
 **Goal**: Create end-to-end report generation pipeline.
 
 **Integrations in this step**:
@@ -257,9 +259,9 @@ Status: Completed (March 29, 2026)
 
 **Commit target**: 2 to 3 commits
 
-- `Day X - orchestrate profile report generation flow`
-- `Day X - persist report cache with ttl and share url`
-- `Day X - add cache-control header and response cleanup`
+- `Day 5 - orchestrate profile report generation flow`
+- `Day 5 - persist report cache with ttl and share url`
+- `Day 5 - add cache-control header and response cleanup`
 
 ---
 
@@ -312,6 +314,8 @@ Status: Completed (March 29, 2026)
 
 ## Step 8 - Compare, Cached Endpoint, and Hardening
 
+Status: Completed (March 29, 2026)
+
 **Goal**: Deliver remaining API surfaces and reliability polish.
 
 **Integrations in this step**:
@@ -328,8 +332,8 @@ Status: Completed (March 29, 2026)
 
 **Commit target**: 2 commits
 
-- `Day X - implement compare endpoint and cached retrieval`
-- `Day X - add input validation and rate limit handling`
+- `Day 5 - implement compare endpoint and cached retrieval`
+- `Day 5 - add input validation and rate limit handling`
 
 ---
 
@@ -402,10 +406,10 @@ Use this board while implementing:
 - [x] Step 2 - DB + TTL cache
 - [x] Step 3 - GitHub service layer
 - [x] Step 4 - Scoring engine
-- [ ] Step 5 - Profile orchestration
+- [x] Step 5 - Profile orchestration
 - [ ] Step 6 - Frontend core
 - [ ] Step 7 - Report visualizations
-- [ ] Step 8 - Compare + hardening
+- [x] Step 8 - Compare + hardening
 - [ ] Step 9 - Testing + QA
 - [ ] Step 10 - Deploy + submission
 

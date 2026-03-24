@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 
+import compareRoutes from "./routes/compareRoutes.js";
 import healthRoutes from "./routes/healthRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import notFound from "./middleware/notFound.js";
@@ -16,6 +17,7 @@ app.use(
 app.use(express.json());
 
 app.use("/api/health", healthRoutes);
+app.use("/api/compare", compareRoutes);
 app.use("/api/profile", profileRoutes);
 
 app.use(notFound);

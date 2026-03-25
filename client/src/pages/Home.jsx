@@ -15,8 +15,8 @@ const Home = () => {
         <p className="eyebrow">Developer Portfolio Evaluator</p>
         <h1>Score any GitHub profile in seconds</h1>
         <p className="muted">
-          Enter a username to generate a report with activity, quality, diversity,
-          community, and hiring-readiness scores.
+          Enter a username to generate a report with activity, quality,
+          diversity, community, and hiring-readiness scores.
         </p>
       </header>
       <SearchForm onSubmit={handleSubmit} />

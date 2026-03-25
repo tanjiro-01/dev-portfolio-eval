@@ -13,7 +13,8 @@ const RepoList = ({ repos = [] }) => {
               </a>
               <p>{repo.description || "No description"}</p>
               <small>
-                {repo.language || "Unknown"} · ⭐ {repo.stars} · Forks {repo.forks}
+                {repo.language || "Unknown"} · ⭐ {repo.stars} · Forks{" "}
+                {repo.forks}
               </small>
             </li>
           ))}

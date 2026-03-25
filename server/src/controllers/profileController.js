@@ -45,7 +45,10 @@ export const compareProfiles = async (req, res, next) => {
     const right = req.query.u2?.toLowerCase();
 
     if (!left || !right) {
-      throw createHttpError(400, "Both u1 and u2 query parameters are required.");
+      throw createHttpError(
+        400,
+        "Both u1 and u2 query parameters are required.",
+      );
     }
 
     if (left === right) {

@@ -5,6 +5,9 @@ import { fetchProfileReport } from "../api/http.js";
 import SearchForm from "../components/SearchForm.jsx";
 import ScoreSummary from "../components/ScoreSummary.jsx";
 import RepoList from "../components/RepoList.jsx";
+import RadarBreakdown from "../components/RadarBreakdown.jsx";
+import LanguageBars from "../components/LanguageBars.jsx";
+import HeatMap from "../components/HeatMap.jsx";
 
 const Report = () => {
   const { username = "" } = useParams();
@@ -14,7 +17,10 @@ const Report = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const normalizedUsername = useMemo(() => username.trim().toLowerCase(), [username]);
+  const normalizedUsername = useMemo(
+    () => username.trim().toLowerCase(),
+    [username],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -63,7 +69,11 @@ const Report = () => {
           <p className="eyebrow">Report</p>
           <h1>{normalizedUsername || "Unknown User"}</h1>
         </div>
-        <SearchForm defaultValue={normalizedUsername} onSubmit={handleSearch} loading={loading} />
+        <SearchForm
+          defaultValue={normalizedUsername}
+          onSubmit={handleSearch}
+          loading={loading}
+        />
       </header>
 
       {loading && <p className="status">Loading profile report...</p>}
@@ -72,10 +82,17 @@ const Report = () => {
       {!loading && !error && report && (
         <section className="report-layout">
           <section className="panel profile-panel">
-            <img src={report.avatarUrl} alt={`${report.username} avatar`} className="avatar" />
+            <img
+              src={report.avatarUrl}
+              alt={`${report.username} avatar`}
+              className="avatar"
+            />
             <div>
               <h2>{report.name || report.username}</h2>
-              <p className="muted">Followers: {report.followers} · Public repos: {report.publicRepos}</p>
+              <p className="muted">
+                Followers: {report.followers} · Public repos:{" "}
+                {report.publicRepos}
+              </p>
               <p>{report.bio || "No bio available."}</p>
               <p className="muted">
                 Cache: {report.cache?.hit ? "hit" : "miss"}
@@ -84,6 +101,9 @@ const Report = () => {
           </section>
 
           <ScoreSummary scores={report.scores} />
+          <RadarBreakdown scores={report.scores} />
+          <LanguageBars languages={report.languages} />
+          <HeatMap heatmapData={report.heatmapData} />
           <RepoList repos={report.topRepos} />
         </section>
       )}

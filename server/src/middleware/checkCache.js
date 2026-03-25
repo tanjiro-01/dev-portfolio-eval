@@ -20,6 +20,7 @@ const checkCache = async (req, res, next) => {
 
     return res.status(200).json({
       ...cached.report,
+      heatmapData: cached.report.heatmapData || [],
       cache: {
         hit: true,
         cachedAt: cached.cachedAt,

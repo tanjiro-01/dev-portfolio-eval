@@ -5,6 +5,29 @@ import { getGitHubService } from "./githubService.js";
 import { computeScores } from "./scoringService.js";
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+const toHeatmapData = (events = []) => {
+  const pushEvents = events.filter((event) => event.type === "PushEvent");
+  const countByDate = pushEvents.reduce((acc, event) => {
+    const key = new Date(event.created_at).toISOString().slice(0, 10);
+    acc[key] = (acc[key] || 0) + (event.payload?.commits?.length || 1);
+    return acc;
+  }, {});
+
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  start.setDate(start.getDate() - 83);
+
+  return Array.from({ length: 84 }, (_, index) => {
+    const date = new Date(start);
+    date.setDate(start.getDate() + index);
+    const dateKey = date.toISOString().slice(0, 10);
+
+    return {
+      date: dateKey,
+      count: countByDate[dateKey] || 0,
+    };
+  });
+};
 
 const toTopRepos = (repos = []) =>
   [...repos]
@@ -46,7 +69,10 @@ const toLanguages = (repos = []) => {
     .sort((a, b) => b.percent - a.percent);
 };
 
-export const buildReportFromGitHub = async (username, githubService = getGitHubService()) => {
+export const buildReportFromGitHub = async (
+  username,
+  githubService = getGitHubService(),
+) => {
   const [user, repos, events] = await Promise.all([
     githubService.getUser(username),
     githubService.getRepos(username),
@@ -65,6 +91,7 @@ export const buildReportFromGitHub = async (username, githubService = getGitHubS
     scores,
     topRepos: toTopRepos(repos),
     languages: toLanguages(repos),
+    heatmapData: toHeatmapData(events),
     shareUrl: `/report/${username}`,
   };
 };

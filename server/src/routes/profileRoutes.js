@@ -2,8 +2,8 @@ import { Router } from "express";
 
 import checkCache from "../middleware/checkCache.js";
 import {
-	getCachedProfile,
-	getProfileSummary,
+  getCachedProfile,
+  getProfileSummary,
 } from "../controllers/profileController.js";
 
 const router = Router();

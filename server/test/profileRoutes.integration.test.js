@@ -5,7 +5,10 @@ import { spawn } from "node:child_process";
 
 const waitForServer = (proc) =>
   new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error("Server start timeout")), 12000);
+    const timer = setTimeout(
+      () => reject(new Error("Server start timeout")),
+      12000,
+    );
 
     proc.stdout.on("data", (data) => {
       const text = data.toString();
@@ -51,14 +54,24 @@ test.after(() => {
   }
 });
 
-test("GET /api/profile/:username/cached returns 404 when missing", { skip: !shouldRun }, async () => {
-  const res = await fetch("http://localhost:5000/api/profile/nonexistent-user-xyz/cached");
+test(
+  "GET /api/profile/:username/cached returns 404 when missing",
+  { skip: !shouldRun },
+  async () => {
+    const res = await fetch(
+      "http://localhost:5000/api/profile/nonexistent-user-xyz/cached",
+    );
 
-  assert.equal(res.status, 404);
-});
+    assert.equal(res.status, 404);
+  },
+);
 
-test("GET /api/compare validates required query params", { skip: !shouldRun }, async () => {
-  const res = await fetch("http://localhost:5000/api/compare");
+test(
+  "GET /api/compare validates required query params",
+  { skip: !shouldRun },
+  async () => {
+    const res = await fetch("http://localhost:5000/api/compare");
 
-  assert.equal(res.status, 400);
-});
+    assert.equal(res.status, 400);
+  },
+);

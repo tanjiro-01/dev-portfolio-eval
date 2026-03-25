@@ -84,5 +84,6 @@ test("buildReportFromGitHub returns normalized report payload", async () => {
   assert.equal(report.username, "devuser");
   assert.equal(report.topRepos.length, 2);
   assert.ok(Array.isArray(report.languages));
+  assert.equal(report.heatmapData.length, 84);
   assert.ok(report.scores.overall >= 0 && report.scores.overall <= 100);
 });

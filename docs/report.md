@@ -267,6 +267,8 @@ Status: Completed (March 29, 2026)
 
 ## Step 6 - Frontend Core UI and Routing
 
+Status: Completed (March 29, 2026)
+
 **Goal**: Build user-facing pages and API integration.
 
 **Integrations in this step**:
@@ -283,9 +285,9 @@ Status: Completed (March 29, 2026)
 
 **Commit target**: 3 commits
 
-- `Day X - add router and page skeletons`
-- `Day X - integrate axios api layer for report fetch`
-- `Day X - implement loading error and not-found ui states`
+- `Day 5 - add router and page skeletons`
+- `Day 5 - integrate axios api layer for report fetch`
+- `Day 5 - implement loading error and not-found ui states`
 
 ---
 
@@ -407,7 +409,7 @@ Use this board while implementing:
 - [x] Step 3 - GitHub service layer
 - [x] Step 4 - Scoring engine
 - [x] Step 5 - Profile orchestration
-- [ ] Step 6 - Frontend core
+- [x] Step 6 - Frontend core
 - [ ] Step 7 - Report visualizations
 - [x] Step 8 - Compare + hardening
 - [ ] Step 9 - Testing + QA

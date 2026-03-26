@@ -7,6 +7,8 @@
     "dev": "nodemon app.js",
     "start": "node app.js",
     "test": "node --test",
+    "test:unit": "node --test",
+    "test:integration": "cross-env RUN_INTEGRATION_TESTS=1 node --test test/profileRoutes.integration.test.js",
     "test:watch": "node --test --watch"
   },
   "keywords": [],
@@ -21,6 +23,7 @@
     "mongoose": "^9.3.3"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "nodemon": "^3.1.14"
   }
 }

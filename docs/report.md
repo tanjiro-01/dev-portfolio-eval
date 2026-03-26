@@ -343,6 +343,8 @@ Status: Completed (March 29, 2026)
 
 ## Step 9 - Testing, QA, and Observability
 
+Status: In Progress (March 29, 2026)
+
 **Goal**: Ensure confidence before deployment.
 
 **Integrations in this step**:
@@ -359,9 +361,9 @@ Status: Completed (March 29, 2026)
 
 **Commit target**: 2 to 3 commits
 
-- `Day X - add scoring unit tests with boundary coverage`
-- `Day X - add api integration tests and fixtures`
-- `Day X - finalize qa checklist and runtime logs`
+- `Day 5 - add scoring unit tests with boundary coverage`
+- `Day 5 - add api integration tests and fixtures`
+- `Day 5 - finalize qa checklist and runtime logs`
 
 ---
 

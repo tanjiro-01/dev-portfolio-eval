@@ -12,4 +12,9 @@ export const fetchProfileReport = async (username) => {
   return response.data;
 };
 
+export const fetchCompareReports = async (u1, u2) => {
+  const response = await http.get(`/compare?u1=${u1}&u2=${u2}`);
+  return response.data;
+};
+
 export default http;

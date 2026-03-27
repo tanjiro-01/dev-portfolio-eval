@@ -343,7 +343,7 @@ Status: Completed (March 29, 2026)
 
 ## Step 9 - Testing, QA, and Observability
 
-Status: In Progress (March 29, 2026)
+Status: Completed (March 29, 2026)
 
 **Goal**: Ensure confidence before deployment.
 
@@ -358,6 +358,7 @@ Status: In Progress (March 29, 2026)
 
 - Repeatable test run output.
 - Verified pass on critical user journeys.
+- Cache transition integration checks with database assertions.
 
 **Commit target**: 2 to 3 commits
 
@@ -369,7 +370,7 @@ Status: In Progress (March 29, 2026)
 
 ## Step 10 - Deployment and Submission Readiness
 
-Status: In Progress (March 29, 2026)
+Status: Completed (March 29, 2026)
 
 **Goal**: Production deployment and final handoff quality.
 
@@ -385,6 +386,7 @@ Status: In Progress (March 29, 2026)
 
 - Live frontend and backend URLs.
 - Final submission-ready repository state.
+- Final submission checklist and production runbook documentation.
 
 **Commit target**: 2 commits
 
@@ -418,8 +420,8 @@ Use this board while implementing:
 - [x] Step 6 - Frontend core
 - [x] Step 7 - Report visualizations
 - [x] Step 8 - Compare + hardening
-- [ ] Step 9 - Testing + QA
-- [ ] Step 10 - Deploy + submission
+- [x] Step 9 - Testing + QA
+- [x] Step 10 - Deploy + submission
 
 ---
 

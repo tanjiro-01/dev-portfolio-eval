@@ -20,6 +20,9 @@ const Home = () => {
         </p>
       </header>
       <SearchForm onSubmit={handleSubmit} />
+      <button className="link-button" onClick={() => navigate("/compare")}>
+        Open Compare Mode
+      </button>
     </main>
   );
 };

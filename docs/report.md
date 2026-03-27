@@ -369,6 +369,8 @@ Status: In Progress (March 29, 2026)
 
 ## Step 10 - Deployment and Submission Readiness
 
+Status: In Progress (March 29, 2026)
+
 **Goal**: Production deployment and final handoff quality.
 
 **Integrations in this step**:
@@ -386,8 +388,8 @@ Status: In Progress (March 29, 2026)
 
 **Commit target**: 2 commits
 
-- `Day X - configure production env and cors for deploy`
-- `Day X - finalize deployment docs and submission checklist`
+- `Day 5 - configure production env and cors for deploy`
+- `Day 5 - finalize deployment docs and submission checklist`
 
 ---
 

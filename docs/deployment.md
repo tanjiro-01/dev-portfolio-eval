@@ -29,3 +29,10 @@
 2. Open frontend URL and search for `octocat`.
 3. Verify report loads with score summary and visual components.
 4. Verify second request for same username returns cache hit.
+5. Verify compare endpoint: `<render-url>/api/compare?u1=octocat&u2=torvalds`.
+
+## Pre-release local checks (from repo root)
+
+1. `npm --prefix server run test:unit`
+2. PowerShell: `$env:RUN_INTEGRATION_TESTS='1'; npm --prefix server run test:integration`
+3. `npm --prefix client run build`

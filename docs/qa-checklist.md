@@ -4,17 +4,17 @@
 
 1. Backend unit tests
 
-- Command: `npm run test:unit` in `server`
+- Command: `npm --prefix server run test:unit`
 - Expectation: all tests pass
 
 2. Backend integration tests
 
-- Command: `npm run test:integration` in `server`
+- Command (PowerShell): `$env:RUN_INTEGRATION_TESTS='1'; npm --prefix server run test:integration`
 - Expectation: endpoint behavior checks pass for `/api/profile/:username/cached` and `/api/compare`
 
 3. Frontend build
 
-- Command: `npm run build` in `client`
+- Command: `npm --prefix client run build`
 - Expectation: build completes without errors
 
 ## Manual checks

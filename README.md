@@ -12,8 +12,8 @@ Monorepo for a GitHub profile evaluation app with a React frontend and Express b
 
 1. Install dependencies
 
-- In client: npm install
-- In server: npm install
+- From repo root: `npm --prefix client install`
+- From repo root: `npm --prefix server install`
 
 2. Configure environment files
 
@@ -22,8 +22,8 @@ Monorepo for a GitHub profile evaluation app with a React frontend and Express b
 
 3. Run development servers
 
-- Frontend: cd client && npm run dev
-- Backend: cd server && npm run dev
+- Frontend: `npm --prefix client run dev`
+- Backend: `npm --prefix server run dev`
 
 ## Planned Delivery Flow
 

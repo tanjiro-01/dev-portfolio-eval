@@ -27,9 +27,11 @@ This runbook covers deploy, verification, and rollback for production.
 
 Run locally before each release:
 
-1. `cd server && npm run test:unit`
-2. `cd server && npm run test:integration` (with `RUN_INTEGRATION_TESTS=1`)
-3. `cd client && npm run build`
+1. `npm --prefix server run test:unit`
+2. PowerShell: `$env:RUN_INTEGRATION_TESTS='1'; npm --prefix server run test:integration`
+3. `npm --prefix client run build`
+
+These commands are designed to run from the repository root.
 
 If any command fails, stop deployment and fix before proceeding.
 

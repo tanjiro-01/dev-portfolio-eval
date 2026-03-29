@@ -34,25 +34,34 @@ Browser
 |------|-------|---------------|
 | `Home.jsx` | `/` | Search bar, landing UI |
 | `Report.jsx` | `/report/:username` | Fetch report from backend, render score card |
+| `Compare.jsx` | `/compare` | Multi-user compare builder, matrix comparison, drag reorder |
 
 ### Components
 
 | Component | What it renders |
 |-----------|----------------|
-| `SearchBar.jsx` | Controlled input + submit; calls `api.js` |
-| `ScoreCard.jsx` | Circular progress ring, overall score out of 100 |
-| `RadarChart.jsx` | Chart.js radar — 5 category scores |
+| `SearchForm.jsx` | Controlled input + submit; routes to report |
+| `ScoreSummary.jsx` | Category grid + overall score |
+| `ScoringMethodology.jsx` | Human-readable explanation of scoring weights/signals |
+| `RadarBreakdown.jsx` | Chart.js radar — 5 category scores |
 | `HeatMap.jsx` | GitHub-style contribution calendar grid |
 | `RepoList.jsx` | Top 6 repos with stars, forks, language pill |
+| `Compare.jsx` widgets | Resizable cards and comparison matrix for N users |
 
 ### Data Flow (Frontend)
 
 ```
 User types username
-  → SearchBar triggers api.js → GET /api/profile/:username
+  → SearchForm triggers api.js → GET /api/profile/:username
   → navigate("/report/:username")
   → Report.jsx reads :username from params
-  → renders ScoreCard, RadarChart, HeatMap, RepoList
+  → renders ScoreSummary, ScoringMethodology, RadarBreakdown, HeatMap, RepoList
+
+Home compare builder
+  → add usernames
+  → navigate("/compare?users=user1,user2,user3")
+  → Compare.jsx fetches each profile report
+  → renders multi-user matrix with category winners
 ```
 
 ### State Management

@@ -15,15 +15,21 @@ const HeatMap = ({ heatmapData = [] }) => {
       {!recent.length ? (
         <p className="muted">No contribution data available.</p>
       ) : (
-        <div className="heatmap-grid">
-          {recent.map((entry) => (
-            <div
-              key={entry.date}
-              className={`heat-cell ${toneClass(entry.count)}`}
-              title={`${entry.date}: ${entry.count} commits`}
-            />
-          ))}
-        </div>
+        <>
+          <div className="heatmap-grid heatmap-grid-compact">
+            {recent.map((entry) => (
+              <div
+                key={entry.date}
+                className={`heat-cell heat-cell-compact ${toneClass(entry.count)}`}
+                title={`${entry.date}: ${entry.count} commits`}
+              />
+            ))}
+          </div>
+          <p className="muted heatmap-legend">
+            Lighter blocks mean lower activity, darker blocks mean higher
+            activity.
+          </p>
+        </>
       )}
     </section>
   );

@@ -8,6 +8,7 @@ import RepoList from "../components/RepoList.jsx";
 import RadarBreakdown from "../components/RadarBreakdown.jsx";
 import LanguageBars from "../components/LanguageBars.jsx";
 import HeatMap from "../components/HeatMap.jsx";
+import ScoringMethodology from "../components/ScoringMethodology.jsx";
 
 const Report = () => {
   const { username = "" } = useParams();
@@ -101,6 +102,7 @@ const Report = () => {
           </section>
 
           <ScoreSummary scores={report.scores} />
+          <ScoringMethodology />
           <RadarBreakdown scores={report.scores} />
           <LanguageBars languages={report.languages} />
           <HeatMap heatmapData={report.heatmapData} />

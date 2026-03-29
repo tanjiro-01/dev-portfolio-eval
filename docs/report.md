@@ -103,11 +103,20 @@ Mapped phases: Step 2, Step 5, Step 7.
 
 ### Compare Mode (Bonus)
 
-- Enter two usernames side by side.
-- Radar chart overlaid for both users.
-- Highlight winner per category in green.
+- Enter and compare multiple usernames in one session.
+- Highlight winners per category across all compared users.
+- Support draggable and manually resizable compare widgets.
+- Allow compare flow directly from the home page builder.
 
 Mapped phases: Step 8.
+
+### Explainability and UX Iteration
+
+- Show transparent scoring methodology details alongside score output.
+- Keep heatmap compact for better scanability in report view.
+- Improve compare page layout to auto-adjust as more users are added.
+
+Mapped phases: Step 7, Step 8, Post-step iteration.
 
 ## Step 0 - Project Setup and Guardrails
 
@@ -434,3 +443,11 @@ Execution mode for future work:
 3. We commit with a meaningful Day-based message.
 4. We update this file by checking off the completed step.
 5. We proceed to the next step.
+
+---
+
+## 6) Post-Step Iteration Notes
+
+- Frontend compare mode expanded to multi-user matrix with drag-reorder cards and resizable compare panes.
+- Home page now includes a quick compare builder for launching multi-user comparisons.
+- Report page now includes scoring methodology explanation and a compact heatmap treatment.

@@ -107,6 +107,9 @@ Mapped phases: Step 2, Step 5, Step 7.
 - Highlight winners per category across all compared users.
 - Support draggable and manually resizable compare widgets.
 - Allow compare flow directly from the home page builder.
+- Add multi-user radar overlay for fast visual winner scanning.
+- Add per-category highest-first sorting toggle in compare matrix.
+- Add persisted compare presets via local storage for quick reload.
 
 Mapped phases: Step 8.
 
@@ -451,3 +454,4 @@ Execution mode for future work:
 - Frontend compare mode expanded to multi-user matrix with drag-reorder cards and resizable compare panes.
 - Home page now includes a quick compare builder for launching multi-user comparisons.
 - Report page now includes scoring methodology explanation and a compact heatmap treatment.
+- Compare page now includes a multi-user radar overlay, per-category sorting toggle, and saved preset management.

@@ -30,23 +30,25 @@ Browser
 
 ### Pages
 
-| Page | Route | Responsibility |
-|------|-------|---------------|
-| `Home.jsx` | `/` | Search bar, landing UI |
-| `Report.jsx` | `/report/:username` | Fetch report from backend, render score card |
-| `Compare.jsx` | `/compare` | Multi-user compare builder, matrix comparison, drag reorder |
+| Page          | Route               | Responsibility                                              |
+| ------------- | ------------------- | ----------------------------------------------------------- |
+| `Home.jsx`    | `/`                 | Search bar, landing UI                                      |
+| `Report.jsx`  | `/report/:username` | Fetch report from backend, render score card                |
+| `Compare.jsx` | `/compare`          | Multi-user compare builder, radar overlay, sortable matrix, drag reorder |
 
 ### Components
 
-| Component | What it renders |
-|-----------|----------------|
-| `SearchForm.jsx` | Controlled input + submit; routes to report |
-| `ScoreSummary.jsx` | Category grid + overall score |
+| Component                | What it renders                                       |
+| ------------------------ | ----------------------------------------------------- |
+| `SearchForm.jsx`         | Controlled input + submit; routes to report           |
+| `ScoreSummary.jsx`       | Category grid + overall score                         |
 | `ScoringMethodology.jsx` | Human-readable explanation of scoring weights/signals |
-| `RadarBreakdown.jsx` | Chart.js radar — 5 category scores |
-| `HeatMap.jsx` | GitHub-style contribution calendar grid |
-| `RepoList.jsx` | Top 6 repos with stars, forks, language pill |
-| `Compare.jsx` widgets | Resizable cards and comparison matrix for N users |
+| `RadarBreakdown.jsx`     | Chart.js radar — 5 category scores                    |
+| `HeatMap.jsx`            | GitHub-style contribution calendar grid               |
+| `RepoList.jsx`           | Top 6 repos with stars, forks, language pill          |
+| `Compare.jsx` widgets    | Resizable cards and comparison matrix for N users     |
+| `Compare.jsx` radar      | Overlaid radar datasets for fast winner scanning      |
+| `Compare.jsx` presets    | Local storage presets (save/load/delete compare sets) |
 
 ### Data Flow (Frontend)
 
@@ -61,7 +63,8 @@ Home compare builder
   → add usernames
   → navigate("/compare?users=user1,user2,user3")
   → Compare.jsx fetches each profile report
-  → renders multi-user matrix with category winners
+  → renders multi-user radar overlay + sortable matrix with category winners
+  → allows save/load presets from local storage
 ```
 
 ### State Management
@@ -131,13 +134,13 @@ config/db.js
 
 All logic in `scoringService.js`. Input: raw GitHub API data. Output: normalised 0–100 scores.
 
-| Category | Weight | Key Signals |
-|----------|--------|-------------|
-| Activity | 25% | Commits last 90 days (max 20 pts) + streak consistency (5 pts) |
-| Code Quality | 20% | Per repo: README (+2), license (+1), topics (+1), `/tests` folder (+1) |
-| Diversity | 20% | Unique languages (max 10 pts) + project type variety (web, CLI, lib…) |
-| Community | 20% | Log-scale of total stars + forks; bonus for >50 followers |
-| Hiring Ready | 15% | Bio filled, website set, public email, has pinned repos (5 pts each) |
+| Category     | Weight | Key Signals                                                            |
+| ------------ | ------ | ---------------------------------------------------------------------- |
+| Activity     | 25%    | Commits last 90 days (max 20 pts) + streak consistency (5 pts)         |
+| Code Quality | 20%    | Per repo: README (+2), license (+1), topics (+1), `/tests` folder (+1) |
+| Diversity    | 20%    | Unique languages (max 10 pts) + project type variety (web, CLI, lib…)  |
+| Community    | 20%    | Log-scale of total stars + forks; bonus for >50 followers              |
+| Hiring Ready | 15%    | Bio filled, website set, public email, has pinned repos (5 pts each)   |
 
 **Overall** = weighted sum, capped at 100.
 
@@ -178,12 +181,12 @@ No second collection needed. JWT auth (optional) can use a separate `users` coll
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/profile/:username` | Fetch, score, cache, and return full report |
-| `GET` | `/api/profile/:username/cached` | Return cached report or 404 |
-| `GET` | `/api/compare?u1=&u2=` | Two profiles in one response |
-| `GET` | `/api/health` | `{ status: "ok" }` |
+| Method | Endpoint                        | Description                                 |
+| ------ | ------------------------------- | ------------------------------------------- |
+| `GET`  | `/api/profile/:username`        | Fetch, score, cache, and return full report |
+| `GET`  | `/api/profile/:username/cached` | Return cached report or 404                 |
+| `GET`  | `/api/compare?u1=&u2=`          | Two-profile compare endpoint (legacy support) |
+| `GET`  | `/api/health`                   | `{ status: "ok" }`                          |
 
 ---
 
@@ -191,12 +194,12 @@ No second collection needed. JWT auth (optional) can use a separate `users` coll
 
 All calls via `@octokit/rest` with a PAT (5,000 req/hr).
 
-| Endpoint | Data pulled | Used for |
-|----------|-------------|----------|
-| `GET /users/:username` | name, bio, avatar, followers, blog, email | Profile card + hiring readiness |
-| `GET /users/:username/repos?per_page=100` | language, stars, forks, topics, license | Diversity + quality scores |
-| `GET /users/:username/events/public` | push events, commit timestamps | Activity score + streak |
-| `GET /repos/:owner/:repo/contents` | root file list | Detect `tests/`, `docs/` folders |
+| Endpoint                                  | Data pulled                               | Used for                         |
+| ----------------------------------------- | ----------------------------------------- | -------------------------------- |
+| `GET /users/:username`                    | name, bio, avatar, followers, blog, email | Profile card + hiring readiness  |
+| `GET /users/:username/repos?per_page=100` | language, stars, forks, topics, license   | Diversity + quality scores       |
+| `GET /users/:username/events/public`      | push events, commit timestamps            | Activity score + streak          |
+| `GET /repos/:owner/:repo/contents`        | root file list                            | Detect `tests/`, `docs/` folders |
 
 Calls for a single profile are parallelised with `Promise.all` where data is independent.
 
@@ -216,10 +219,10 @@ TTL expiry     → MongoDB auto-deletes document → next request re-fetches
 
 ## Deployment
 
-| Layer | Platform | Config |
-|-------|----------|--------|
-| Frontend | Vercel | `VITE_API_URL` env var |
-| Backend | Render | All `server/.env` vars set in dashboard |
+| Layer    | Platform      | Config                                               |
+| -------- | ------------- | ---------------------------------------------------- |
+| Frontend | Vercel        | `VITE_API_URL` env var                               |
+| Backend  | Render        | All `server/.env` vars set in dashboard              |
 | Database | MongoDB Atlas | M0 free cluster; IP whitelist `0.0.0.0/0` for Render |
 
 CORS on the backend is locked to `CLIENT_URL` (your Vercel domain) in production.
@@ -229,6 +232,7 @@ CORS on the backend is locked to `CLIENT_URL` (your Vercel domain) in production
 ## Environment Variables
 
 **`server/.env`**
+
 ```
 MONGODB_URI=mongodb+srv://...
 GITHUB_TOKEN=ghp_...
@@ -238,6 +242,7 @@ CLIENT_URL=https://your-app.vercel.app
 ```
 
 **`client/.env`**
+
 ```
 VITE_API_URL=http://localhost:5000/api   # → Render URL in production
 ```

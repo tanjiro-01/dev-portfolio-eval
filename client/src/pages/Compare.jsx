@@ -1,7 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LineElement,
+  PointElement,
+  RadialLinearScale,
+  Tooltip,
+} from "chart.js";
+import { Radar } from "react-chartjs-2";
 
 import { fetchProfileReport } from "../api/http.js";
+
+ChartJS.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+);
 
 const scoreRows = [
   ["Activity", "activity"],
@@ -10,6 +29,18 @@ const scoreRows = [
   ["Community", "community"],
   ["Hiring Ready", "hiringReady"],
   ["Overall", "overall"],
+];
+
+const PRESET_STORAGE_KEY = "compare-presets-v1";
+
+const radarColors = [
+  ["#0d6efd", "rgba(13, 110, 253, 0.14)"],
+  ["#198754", "rgba(25, 135, 84, 0.14)"],
+  ["#dc3545", "rgba(220, 53, 69, 0.14)"],
+  ["#fd7e14", "rgba(253, 126, 20, 0.14)"],
+  ["#6f42c1", "rgba(111, 66, 193, 0.14)"],
+  ["#20c997", "rgba(32, 201, 151, 0.14)"],
+  ["#d63384", "rgba(214, 51, 132, 0.14)"],
 ];
 
 const parseUsersFromParams = (searchParams) => {
@@ -46,10 +77,33 @@ const Compare = () => {
   const [error, setError] = useState("");
   const [reports, setReports] = useState([]);
   const [failedUsers, setFailedUsers] = useState([]);
+  const [sortByCategory, setSortByCategory] = useState(true);
+  const [presetName, setPresetName] = useState("");
+  const [presets, setPresets] = useState([]);
 
   useEffect(() => {
     setUsers(queryUsers);
   }, [queryUsers]);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(PRESET_STORAGE_KEY);
+      if (!raw) {
+        return;
+      }
+
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        setPresets(parsed);
+      }
+    } catch {
+      setPresets([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presets));
+  }, [presets]);
 
   const syncUsersToUrl = (nextUsers) => {
     const normalized = [
@@ -148,11 +202,43 @@ const Compare = () => {
     return winners;
   }, [reports]);
 
-  const matrixColumns = useMemo(
-    () =>
-      `minmax(120px, 1fr) repeat(${Math.max(reports.length, 1)}, minmax(72px, 1fr)) minmax(140px, 1fr)`,
-    [reports.length],
-  );
+  const radarData = useMemo(() => {
+    const labels = scoreRows.map(([label]) => label);
+    const datasets = reports.map((report, index) => {
+      const [borderColor, backgroundColor] =
+        radarColors[index % radarColors.length];
+
+      return {
+        label: report.username,
+        data: scoreRows.map(([, key]) => report.scores?.[key] ?? 0),
+        borderColor,
+        backgroundColor,
+        borderWidth: 2,
+      };
+    });
+
+    return { labels, datasets };
+  }, [reports]);
+
+  const radarOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      r: {
+        min: 0,
+        max: 100,
+        ticks: {
+          stepSize: 20,
+          backdropColor: "transparent",
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: "bottom",
+      },
+    },
+  };
 
   const handleAddUser = (event) => {
     event.preventDefault();
@@ -168,6 +254,30 @@ const Compare = () => {
 
   const removeUser = (username) => {
     syncUsersToUrl(users.filter((entry) => entry !== username));
+  };
+
+  const savePreset = () => {
+    const normalizedName = presetName.trim();
+    if (!normalizedName || users.length < 2) {
+      return;
+    }
+
+    const preset = {
+      id: `${Date.now()}`,
+      name: normalizedName,
+      users,
+    };
+
+    setPresets((prev) => [preset, ...prev].slice(0, 8));
+    setPresetName("");
+  };
+
+  const applyPreset = (presetUsers) => {
+    syncUsersToUrl(presetUsers);
+  };
+
+  const deletePreset = (id) => {
+    setPresets((prev) => prev.filter((preset) => preset.id !== id));
   };
 
   const handleDrop = (toIndex) => {
@@ -208,6 +318,56 @@ const Compare = () => {
           Tip: drag cards below to reorder columns. Cards and table can be
           manually resized.
         </p>
+
+        <section className="panel compare-presets-panel">
+          <h2>Saved Compare Presets</h2>
+          <div className="compare-presets-form">
+            <input
+              className="search-input"
+              placeholder="Preset name"
+              value={presetName}
+              onChange={(event) => setPresetName(event.target.value)}
+            />
+            <button
+              className="link-button"
+              type="button"
+              onClick={savePreset}
+              disabled={users.length < 2}
+            >
+              Save Current Users
+            </button>
+          </div>
+          {!presets.length ? (
+            <p className="muted">No presets saved yet.</p>
+          ) : (
+            <div className="preset-list">
+              {presets.map((preset) => (
+                <article key={preset.id} className="preset-item">
+                  <div>
+                    <strong>{preset.name}</strong>
+                    <p className="muted">{preset.users.join(", ")}</p>
+                  </div>
+                  <div className="preset-actions">
+                    <button
+                      className="link-button"
+                      type="button"
+                      onClick={() => applyPreset(preset.users)}
+                    >
+                      Load
+                    </button>
+                    <button
+                      className="link-button"
+                      type="button"
+                      onClick={() => deletePreset(preset.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
       </header>
 
       {error && <p className="status error">{error}</p>}
@@ -247,54 +407,69 @@ const Compare = () => {
       )}
 
       {!error && !loading && reports.length >= 2 && (
-        <section className="panel">
-          <h2>Comparison Matrix</h2>
+        <>
+          <section className="panel chart-panel">
+            <h2>Multi-User Radar Overlay</h2>
+            <p className="muted">
+              Use this overlay for quick visual winner scanning across all score categories.
+            </p>
+            <div className="chart-box">
+              <Radar data={radarData} options={radarOptions} />
+            </div>
+          </section>
 
-          <div className="compare-table compare-resizable">
-            <article
-              className="compare-row compare-row-header"
-              style={{ gridTemplateColumns: matrixColumns }}
-            >
-              <span className="compare-label">Category</span>
-              {reports.map((report) => (
-                <span key={report.username} className="compare-score">
-                  {report.username}
-                </span>
-              ))}
-              <span className="compare-vs">Winner(s)</span>
-            </article>
+          <section className="panel">
+            <div className="compare-matrix-header">
+              <h2>Comparison Matrix</h2>
+              <label className="compare-sort-toggle">
+                <input
+                  type="checkbox"
+                  checked={sortByCategory}
+                  onChange={(event) => setSortByCategory(event.target.checked)}
+                />
+                Highest-first sorting per category
+              </label>
+            </div>
 
-            {scoreRows.map(([label, key]) => {
-              const winners = categoryWinners[key] || [];
-              const winnerText =
-                winners.length > 1 ? winners.join(", ") : winners[0] || "n/a";
+            <div className="compare-table compare-resizable">
+              {scoreRows.map(([label, key]) => {
+                const winners = categoryWinners[key] || [];
+                const winnerText =
+                  winners.length > 1 ? winners.join(", ") : winners[0] || "n/a";
 
-              return (
-                <article
-                  key={key}
-                  className="compare-row"
-                  style={{ gridTemplateColumns: matrixColumns }}
-                >
-                  <span className="compare-label">{label}</span>
-                  {reports.map((report) => {
-                    const score = report.scores?.[key] ?? 0;
-                    const isWinner = winners.includes(report.username);
+                const rowReports = sortByCategory
+                  ? [...reports].sort(
+                      (a, b) =>
+                        (b.scores?.[key] ?? 0) - (a.scores?.[key] ?? 0),
+                    )
+                  : reports;
 
-                    return (
-                      <span
-                        key={`${key}-${report.username}`}
-                        className={`compare-score ${isWinner ? "winner" : ""}`}
-                      >
-                        {score}
-                      </span>
-                    );
-                  })}
-                  <span className="compare-vs">{winnerText}</span>
-                </article>
-              );
-            })}
-          </div>
-        </section>
+                return (
+                  <article key={key} className="compare-row compare-row-rich">
+                    <span className="compare-label">{label}</span>
+                    <div className="compare-row-values">
+                      {rowReports.map((report) => {
+                        const score = report.scores?.[key] ?? 0;
+                        const isWinner = winners.includes(report.username);
+
+                        return (
+                          <div
+                            key={`${key}-${report.username}`}
+                            className={`compare-score-chip ${isWinner ? "winner" : ""}`}
+                          >
+                            <span>{report.username}</span>
+                            <strong>{score}</strong>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <span className="compare-vs">{winnerText}</span>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        </>
       )}
     </main>
   );

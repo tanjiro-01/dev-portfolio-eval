@@ -87,6 +87,38 @@
   gap: 10px;
 }
 
+.compare-presets-panel {
+  margin-top: 4px;
+}
+
+.compare-presets-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.preset-list {
+  display: grid;
+  gap: 8px;
+}
+
+.preset-item {
+  border: 1px solid #d8e2ef;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  background: #ffffff;
+}
+
+.preset-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .panel {
   background: #f8fbff;
   border: 1px solid #dde6f3;
@@ -203,10 +235,7 @@
 
 .compare-row {
   display: grid;
-  grid-template-columns: minmax(120px, 1fr) repeat(
-      auto-fit,
-      minmax(72px, 1fr)
-    ) minmax(140px, 1fr);
+  grid-template-columns: minmax(120px, 1fr) 2fr minmax(120px, 1fr);
   gap: 10px;
   align-items: center;
   border: 1px solid #d8e2ef;
@@ -219,8 +248,33 @@
   background: #eef4ff;
 }
 
+.compare-row-rich {
+  grid-template-columns: minmax(110px, 1fr) 2fr minmax(140px, 1fr);
+}
+
 .compare-label {
   font-weight: 600;
+}
+
+.compare-row-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.compare-score-chip {
+  border: 1px solid #d8e2ef;
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compare-score-chip.winner {
+  border-color: #b6d4fe;
+  background: #e7f1ff;
 }
 
 .compare-score {
@@ -236,6 +290,22 @@
   text-align: center;
   color: #4b5563;
   font-size: 13px;
+}
+
+.compare-matrix-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.compare-sort-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #334155;
 }
 
 .scoring-grid {
@@ -367,6 +437,23 @@
     grid-template-columns: 1fr;
   }
 
+  .compare-presets-form {
+    grid-template-columns: 1fr;
+  }
+
+  .preset-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .preset-actions {
+    width: 100%;
+  }
+
+  .preset-actions .link-button {
+    width: 100%;
+  }
+
   .home-compare-input-row {
     grid-template-columns: 1fr;
   }
@@ -382,10 +469,16 @@
   }
 
   .compare-row {
-    grid-template-columns: minmax(100px, 1fr) repeat(
-        auto-fit,
-        minmax(66px, 1fr)
-      ) minmax(110px, 1fr);
+    grid-template-columns: 1fr;
     font-size: 14px;
+  }
+
+  .compare-matrix-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .compare-vs {
+    text-align: left;
   }
 }

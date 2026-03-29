@@ -3,10 +3,21 @@ import { useNavigate } from "react-router-dom";
 
 import SearchForm from "../components/SearchForm.jsx";
 
+const PRESET_STORAGE_KEY = "compare-presets-v1";
+
 const Home = () => {
   const navigate = useNavigate();
   const [compareInput, setCompareInput] = useState("");
   const [compareUsers, setCompareUsers] = useState([]);
+  const [savedPresets] = useState(() => {
+    try {
+      const raw = window.localStorage.getItem(PRESET_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  });
 
   const handleSubmit = (username) => {
     navigate(`/report/${username}`);
@@ -94,6 +105,24 @@ const Home = () => {
         <button className="link-button" onClick={() => navigate("/compare")}>
           Open Empty Compare Mode
         </button>
+
+        {!!savedPresets.length && (
+          <>
+            <h3>Saved Presets</h3>
+            <div className="chip-row">
+              {savedPresets.map((preset) => (
+                <button
+                  key={preset.id}
+                  type="button"
+                  className="chip"
+                  onClick={() => navigate(`/compare?users=${preset.users.join(",")}`)}
+                >
+                  {preset.name}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </section>
     </main>
   );

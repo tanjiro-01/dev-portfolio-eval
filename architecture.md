@@ -30,10 +30,10 @@ Browser
 
 ### Pages
 
-| Page          | Route               | Responsibility                                              |
-| ------------- | ------------------- | ----------------------------------------------------------- |
-| `Home.jsx`    | `/`                 | Search bar, landing UI                                      |
-| `Report.jsx`  | `/report/:username` | Fetch report from backend, render score card                |
+| Page          | Route               | Responsibility                                                           |
+| ------------- | ------------------- | ------------------------------------------------------------------------ |
+| `Home.jsx`    | `/`                 | Search bar, landing UI                                                   |
+| `Report.jsx`  | `/report/:username` | Fetch report from backend, render score card                             |
 | `Compare.jsx` | `/compare`          | Multi-user compare builder, radar overlay, sortable matrix, drag reorder |
 
 ### Components
@@ -181,12 +181,12 @@ No second collection needed. JWT auth (optional) can use a separate `users` coll
 
 ## API Endpoints
 
-| Method | Endpoint                        | Description                                 |
-| ------ | ------------------------------- | ------------------------------------------- |
-| `GET`  | `/api/profile/:username`        | Fetch, score, cache, and return full report |
-| `GET`  | `/api/profile/:username/cached` | Return cached report or 404                 |
+| Method | Endpoint                        | Description                                   |
+| ------ | ------------------------------- | --------------------------------------------- |
+| `GET`  | `/api/profile/:username`        | Fetch, score, cache, and return full report   |
+| `GET`  | `/api/profile/:username/cached` | Return cached report or 404                   |
 | `GET`  | `/api/compare?u1=&u2=`          | Two-profile compare endpoint (legacy support) |
-| `GET`  | `/api/health`                   | `{ status: "ok" }`                          |
+| `GET`  | `/api/health`                   | `{ status: "ok" }`                            |
 
 ---
 

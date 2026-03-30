@@ -411,7 +411,8 @@ const Compare = () => {
           <section className="panel chart-panel">
             <h2>Multi-User Radar Overlay</h2>
             <p className="muted">
-              Use this overlay for quick visual winner scanning across all score categories.
+              Use this overlay for quick visual winner scanning across all score
+              categories.
             </p>
             <div className="chart-box">
               <Radar data={radarData} options={radarOptions} />
@@ -439,8 +440,7 @@ const Compare = () => {
 
                 const rowReports = sortByCategory
                   ? [...reports].sort(
-                      (a, b) =>
-                        (b.scores?.[key] ?? 0) - (a.scores?.[key] ?? 0),
+                      (a, b) => (b.scores?.[key] ?? 0) - (a.scores?.[key] ?? 0),
                     )
                   : reports;
 

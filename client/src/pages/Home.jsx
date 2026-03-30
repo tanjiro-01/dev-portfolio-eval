@@ -115,7 +115,9 @@ const Home = () => {
                   key={preset.id}
                   type="button"
                   className="chip"
-                  onClick={() => navigate(`/compare?users=${preset.users.join(",")}`)}
+                  onClick={() =>
+                    navigate(`/compare?users=${preset.users.join(",")}`)
+                  }
                 >
                   {preset.name}
                 </button>

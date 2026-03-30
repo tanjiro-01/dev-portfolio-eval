@@ -17,11 +17,22 @@ const Report = () => {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const normalizedUsername = useMemo(
     () => username.trim().toLowerCase(),
     [username],
   );
+
+  // Update document title when username or report loads
+  useEffect(() => {
+    if (normalizedUsername) {
+      document.title = `${normalizedUsername} — Portfolio Evaluator`;
+    }
+    return () => {
+      document.title = "Portfolio Evaluator";
+    };
+  }, [normalizedUsername]);
 
   useEffect(() => {
     let cancelled = false;
@@ -63,12 +74,40 @@ const Report = () => {
     navigate(`/report/${nextUsername}`);
   };
 
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy link:", err);
+    }
+  };
+
   return (
     <main className="page">
       <header className="report-header">
         <div>
           <p className="eyebrow">Report</p>
-          <h1>{normalizedUsername || "Unknown User"}</h1>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <h1>{normalizedUsername || "Unknown User"}</h1>
+            <button
+              onClick={handleCopyLink}
+              style={{
+                padding: "8px 12px",
+                fontSize: 14,
+                backgroundColor: copied ? "#4CAF50" : "#2196F3",
+                color: "#fff",
+                border: "none",
+                borderRadius: 4,
+                cursor: "pointer",
+                transition: "background-color 0.2s",
+              }}
+              title="Copy report link to clipboard"
+            >
+              {copied ? "✓ Copied" : "📋 Copy Link"}
+            </button>
+          </div>
         </div>
         <SearchForm
           defaultValue={normalizedUsername}

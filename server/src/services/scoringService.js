@@ -89,7 +89,8 @@ export const scoreHiringReady = (user, repos = []) => {
 
   if (user?.bio) points += 20;
   if (user?.blog) points += 20;
-  if (user?.email) points += 20;
+  // Location or company is more fair than email (which is almost always private)
+  if (user?.location || user?.company) points += 20;
   if ((repos || []).some((repo) => !repo.fork)) points += 20;
   if ((repos || []).length >= 3) points += 20;
 

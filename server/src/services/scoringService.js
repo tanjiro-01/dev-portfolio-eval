@@ -1,5 +1,50 @@
 const roundScore = (value) => Math.max(0, Math.min(100, Math.round(value)));
 
+// Calculate longest consecutive day streak from events
+const calculateLongestStreak = (events = []) => {
+  const pushEvents = events.filter((e) => e.type === "PushEvent");
+
+  if (pushEvents.length === 0) {
+    return 0;
+  }
+
+  // Group events by date (YYYY-MM-DD)
+  const activeDays = new Set(
+    pushEvents.map((e) => new Date(e.created_at).toISOString().split("T")[0]),
+  );
+
+  if (activeDays.size === 0) {
+    return 0;
+  }
+
+  // Sort days chronologically
+  const sortedDays = Array.from(activeDays).sort();
+
+  // Find longest consecutive streak
+  let maxStreak = 1;
+  let currentStreak = 1;
+
+  for (let i = 1; i < sortedDays.length; i++) {
+    const prevDay = new Date(sortedDays[i - 1]);
+    const currDay = new Date(sortedDays[i]);
+
+    // Check if current day is consecutive (within 1 day)
+    const diffMs = currDay.getTime() - prevDay.getTime();
+    const diffDays = diffMs / (24 * 60 * 60 * 1000);
+
+    if (diffDays <= 1) {
+      currentStreak++;
+      maxStreak = Math.max(maxStreak, currentStreak);
+    } else {
+      currentStreak = 1;
+    }
+  }
+
+  // Scale to 0-100 (e.g., 365-day streak = 100)
+  // Cap at reasonable value (1 year)
+  return Math.min((maxStreak / 365) * 100, 100);
+};
+
 export const scoreActivity = (events = []) => {
   const now = Date.now();
   const ninetyDaysAgo = now - 90 * 24 * 60 * 60 * 1000;
@@ -17,17 +62,9 @@ export const scoreActivity = (events = []) => {
 
   const commitPoints = Math.min(totalCommits / 20, 1) * 20;
 
-  const activeWeeks = [0, 1, 2, 3].filter((weeksAgo) => {
-    const weekStart = now - (weeksAgo + 1) * 7 * 24 * 60 * 60 * 1000;
-    const weekEnd = now - weeksAgo * 7 * 24 * 60 * 60 * 1000;
-
-    return recentPushes.some((event) => {
-      const eventTime = new Date(event.created_at).getTime();
-      return eventTime >= weekStart && eventTime < weekEnd;
-    });
-  }).length;
-
-  const streakPoints = (activeWeeks / 4) * 5;
+  // NEW: Calculate actual longest consecutive day streak from ALL events
+  const longestStreak = calculateLongestStreak(events);
+  const streakPoints = longestStreak * 0.05; // Scale to max 5 points
 
   return roundScore(((commitPoints + streakPoints) / 25) * 100);
 };

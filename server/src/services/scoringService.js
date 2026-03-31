@@ -32,25 +32,65 @@ export const scoreActivity = (events = []) => {
   return roundScore(((commitPoints + streakPoints) / 25) * 100);
 };
 
-export const scoreCodeQuality = (repos = []) => {
+export const scoreCodeQuality = async (repos = [], owner, githubService) => {
   if (!repos.length) {
     return 0;
   }
 
-  const total = repos.reduce((sum, repo) => {
+  // Sample top 10 repos by stars to avoid excessive API calls
+  const sampleRepos = [...repos]
+    .sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0))
+    .slice(0, 10);
+
+  let totalScore = 0;
+
+  for (const repo of sampleRepos) {
     let repoPoints = 0;
 
+    // Existing signals (always available, no API call needed)
     if (repo.license?.spdx_id) repoPoints += 1;
     if (repo.topics?.length) repoPoints += 1;
     if (repo.description) repoPoints += 1;
     if (repo.homepage) repoPoints += 1;
     if (!repo.fork) repoPoints += 1;
 
-    return sum + repoPoints;
-  }, 0);
+    // NEW: README detection (requires API call)
+    let hasReadme = false;
+    let hasTests = false;
 
-  const max = repos.length * 5;
-  return roundScore((total / max) * 100);
+    if (githubService && owner) {
+      try {
+        const contents = await githubService.getRepoContents(
+          owner,
+          repo.name,
+          "",
+        );
+        if (Array.isArray(contents)) {
+          // Check for README file (case-insensitive)
+          hasReadme = contents.some(
+            (f) => /^readme/i.test(f.name) && f.type === "file",
+          );
+          if (hasReadme) repoPoints += 2;
+
+          // Check for tests folder (case-insensitive: test, tests, testing, etc.)
+          hasTests = contents.some(
+            (f) => /^tests?$/i.test(f.name) && f.type === "dir",
+          );
+          if (hasTests) repoPoints += 2;
+        }
+      } catch (error) {
+        // Gracefully continue if content fetch fails (e.g., 404 for private repo)
+        console.warn(
+          `Could not fetch contents for ${owner}/${repo.name}: ${error.message}`,
+        );
+      }
+    }
+
+    totalScore += repoPoints;
+  }
+
+  const maxScore = sampleRepos.length * 10; // Max 5 existing + 2 readme + 2 tests
+  return roundScore((totalScore / maxScore) * 100);
 };
 
 export const scoreDiversity = (repos = []) => {
@@ -97,9 +137,16 @@ export const scoreHiringReady = (user, repos = []) => {
   return roundScore(points);
 };
 
-export const computeScores = (user, repos = [], events = []) => {
+export const computeScores = async (
+  user,
+  repos = [],
+  events = [],
+  options = {},
+) => {
+  const { githubService = null, username = user.login } = options;
+
   const activity = scoreActivity(events);
-  const codeQuality = scoreCodeQuality(repos);
+  const codeQuality = await scoreCodeQuality(repos, username, githubService);
   const diversity = scoreDiversity(repos);
   const community = scoreCommunity(user, repos);
   const hiringReady = scoreHiringReady(user, repos);

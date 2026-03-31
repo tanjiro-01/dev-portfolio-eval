@@ -79,7 +79,10 @@ export const buildReportFromGitHub = async (
     githubService.getEvents(username),
   ]);
 
-  const scores = computeScores(user, repos, events);
+  const scores = await computeScores(user, repos, events, {
+    githubService,
+    username,
+  });
 
   return {
     username,

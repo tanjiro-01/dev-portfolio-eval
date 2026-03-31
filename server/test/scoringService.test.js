@@ -26,7 +26,7 @@ test("scoreActivity returns high score for consistent pushes", () => {
   assert.ok(scoreActivity(events) >= 80);
 });
 
-test("scoreCodeQuality rewards metadata-rich repos", () => {
+test("scoreCodeQuality rewards metadata-rich repos", async () => {
   const repos = [
     {
       license: { spdx_id: "MIT" },
@@ -37,11 +37,15 @@ test("scoreCodeQuality rewards metadata-rich repos", () => {
     },
   ];
 
-  assert.equal(scoreCodeQuality(repos), 100);
+  // Call without githubService (null) to test basic scoring
+  // Scores 5/10 on basic signals (no README/tests detection), so 50%
+  const score = await scoreCodeQuality(repos, "testuser", null);
+  assert.ok(score === 50);
 });
 
-test("computeScores returns bounded category scores and overall", () => {
+test("computeScores returns bounded category scores and overall", async () => {
   const user = {
+    login: "testuser",
     followers: 10,
     bio: "Developer",
     blog: "https://example.com",
@@ -61,7 +65,10 @@ test("computeScores returns bounded category scores and overall", () => {
     },
   ];
 
-  const scores = computeScores(user, repos, []);
+  const scores = await computeScores(user, repos, [], {
+    githubService: null,
+    username: "testuser",
+  });
 
   for (const value of Object.values(scores)) {
     assert.ok(value >= 0 && value <= 100);

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 import { fetchProfileReport } from "../api/http.js";
 import SearchForm from "../components/SearchForm.jsx";
@@ -85,7 +86,26 @@ const Report = () => {
   };
 
   return (
-    <main className="page">
+    <>
+      <Helmet>
+        <title>{normalizedUsername} — Portfolio Evaluator</title>
+        <meta
+          name="description"
+          content={`${normalizedUsername}'s developer portfolio evaluated on activity, code quality, diversity, and community impact.`}
+        />
+        <meta property="og:title" content={`${normalizedUsername}'s Developer Portfolio`} />
+        <meta
+          property="og:description"
+          content={`Overall Score: ${report?.scores?.overall || 0}/100`}
+        />
+        {report?.avatarUrl && <meta property="og:image" content={report.avatarUrl} />}
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="profile" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={`${normalizedUsername}'s Portfolio`} />
+      </Helmet>
+
+      <main className="page">
       <header className="report-header">
         <div>
           <p className="eyebrow">Report</p>
@@ -148,7 +168,8 @@ const Report = () => {
           <RepoList repos={report.topRepos} />
         </section>
       )}
-    </main>
+      </main>
+    </>
   );
 };
 

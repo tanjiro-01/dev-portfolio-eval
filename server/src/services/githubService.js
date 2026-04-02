@@ -13,10 +13,46 @@ const createOctokit = () => {
   return new Octokit({ auth: token });
 };
 
+// Helper to handle rate limit retries with exponential backoff
+const withRetry = async (fn, maxRetries = 3) => {
+  let lastError;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+
+      // Check if it's a rate limit error (403 with specific message)
+      if (error.status === 403 && error.message?.includes("API rate limit")) {
+        const retryAfter = error.response?.headers?.["retry-after"];
+        const waitMs = retryAfter
+          ? parseInt(retryAfter) * 1000
+          : Math.pow(2, attempt) * 1000; // Exponential backoff
+
+        if (attempt < maxRetries) {
+          console.warn(
+            `GitHub rate limited (attempt ${attempt}/${maxRetries}). Waiting ${waitMs}ms before retry...`,
+          );
+          await new Promise((resolve) => setTimeout(resolve, waitMs));
+          continue;
+        }
+      }
+
+      // For non-rate-limit errors or final attempt, throw immediately
+      throw error;
+    }
+  }
+
+  throw lastError;
+};
+
 export const createGitHubService = (octokit = createOctokit()) => {
   const getUser = async (username) => {
     try {
-      const response = await octokit.users.getByUsername({ username });
+      const response = await withRetry(() =>
+        octokit.users.getByUsername({ username }),
+      );
       return response.data;
     } catch (error) {
       throw mapGitHubError(error, username);
@@ -25,11 +61,13 @@ export const createGitHubService = (octokit = createOctokit()) => {
 
   const getRepos = async (username) => {
     try {
-      const response = await octokit.repos.listForUser({
-        username,
-        sort: "updated",
-        per_page: 100,
-      });
+      const response = await withRetry(() =>
+        octokit.repos.listForUser({
+          username,
+          sort: "updated",
+          per_page: 100,
+        }),
+      );
       return response.data;
     } catch (error) {
       throw mapGitHubError(error, username);
@@ -38,10 +76,12 @@ export const createGitHubService = (octokit = createOctokit()) => {
 
   const getEvents = async (username) => {
     try {
-      const response = await octokit.activity.listPublicEventsForUser({
-        username,
-        per_page: 100,
-      });
+      const response = await withRetry(() =>
+        octokit.activity.listPublicEventsForUser({
+          username,
+          per_page: 100,
+        }),
+      );
       return response.data;
     } catch (error) {
       throw mapGitHubError(error, username);
@@ -50,11 +90,13 @@ export const createGitHubService = (octokit = createOctokit()) => {
 
   const getRepoContents = async (owner, repo, path = "") => {
     try {
-      const response = await octokit.repos.getContent({
-        owner,
-        repo,
-        path,
-      });
+      const response = await withRetry(() =>
+        octokit.repos.getContent({
+          owner,
+          repo,
+          path,
+        }),
+      );
       return response.data;
     } catch (error) {
       throw mapGitHubError(error, owner);

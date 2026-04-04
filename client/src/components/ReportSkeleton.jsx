@@ -2,6 +2,7 @@ const Skeleton = ({
   width = "100%",
   height = "20px",
   borderRadius = "4px",
+  style = {},
 }) => (
   <div
     style={{
@@ -10,6 +11,7 @@ const Skeleton = ({
       backgroundColor: "#e0e0e0",
       borderRadius,
       animation: "pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      ...style,
     }}
   />
 );
@@ -27,7 +29,7 @@ const ReportSkeleton = () => {
           }
         }
       `}</style>
-      <main className="page">
+      <section className="page" aria-busy="true" aria-live="polite">
         <header className="report-header">
           <div>
             <p className="eyebrow">Report</p>
@@ -36,7 +38,7 @@ const ReportSkeleton = () => {
           <Skeleton width="250px" height="40px" borderRadius="8px" />
         </header>
 
-        <section className="report-layout">
+        <div className="report-layout">
           {/* Profile Panel Skeleton */}
           <section className="panel profile-panel">
             <Skeleton width="120px" height="120px" borderRadius="50%" />
@@ -162,8 +164,8 @@ const ReportSkeleton = () => {
               ))}
             </div>
           </section>
-        </section>
-      </main>
+        </div>
+      </section>
     </>
   );
 };

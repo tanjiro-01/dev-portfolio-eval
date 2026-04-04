@@ -1,7 +1,14 @@
 import { Bar } from "react-chartjs-2";
-import { Chart, registerables } from "chart.js";
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Tooltip,
+} from "chart.js";
 
-Chart.register(...registerables);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 // Language color palette
 const languageColors = {

@@ -10,6 +10,8 @@ export const validateEnvironment = () => {
   }
 
   if (!process.env.MONGODB_URI) {
-    console.warn("MONGODB_URI is not set. Running without persistent cache.");
+    process.stderr.write(
+      "MONGODB_URI is not set. Running without persistent cache.\n",
+    );
   }
 };

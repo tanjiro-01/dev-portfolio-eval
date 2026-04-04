@@ -13,16 +13,8 @@ const CircularProgress = ({ score, max = 100 }) => {
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 16,
-      }}
-    >
+    <div style={{ position: "relative", width: 140, height: 140 }}>
       <svg width="140" height="140" style={{ transform: "rotate(-90deg)" }}>
-        {/* Background circle */}
         <circle
           cx="70"
           cy="70"
@@ -31,7 +23,6 @@ const CircularProgress = ({ score, max = 100 }) => {
           stroke="#e0e0e0"
           strokeWidth="8"
         />
-        {/* Progress circle */}
         <circle
           cx="70"
           cy="70"
@@ -45,7 +36,17 @@ const CircularProgress = ({ score, max = 100 }) => {
           style={{ transition: "stroke-dashoffset 0.5s ease" }}
         />
       </svg>
-      <div style={{ textAlign: "center" }}>
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+        }}
+      >
         <div style={{ fontSize: 32, fontWeight: "bold", color: "#333" }}>
           {score}
         </div>

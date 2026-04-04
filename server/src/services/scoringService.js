@@ -1,5 +1,65 @@
 const roundScore = (value) => Math.max(0, Math.min(100, Math.round(value)));
 
+const CATEGORY_KEYWORDS = {
+  web: [
+    "web",
+    "html",
+    "css",
+    "javascript",
+    "typescript",
+    "react",
+    "vue",
+    "angular",
+    "next",
+    "frontend",
+  ],
+  backend: [
+    "backend",
+    "api",
+    "server",
+    "node",
+    "express",
+    "django",
+    "flask",
+    "spring",
+    "fastapi",
+  ],
+  cli: ["cli", "terminal", "command-line", "shell", "tooling"],
+  mobile: [
+    "mobile",
+    "android",
+    "ios",
+    "flutter",
+    "react-native",
+    "swift",
+    "kotlin",
+  ],
+  systems: [
+    "systems",
+    "kernel",
+    "embedded",
+    "c",
+    "c++",
+    "rust",
+    "assembly",
+    "low-level",
+  ],
+  data: [
+    "data",
+    "analytics",
+    "machine-learning",
+    "ml",
+    "ai",
+    "pandas",
+    "numpy",
+    "jupyter",
+  ],
+  devops: ["devops", "docker", "kubernetes", "terraform", "ci", "cd", "infra"],
+  game: ["game", "unity", "unreal", "godot"],
+  security: ["security", "crypto", "vulnerability", "pentest", "auth"],
+  blockchain: ["blockchain", "web3", "solidity", "ethereum"],
+};
+
 // Calculate longest consecutive day streak from events
 const calculateLongestStreak = (events = []) => {
   const pushEvents = events.filter((e) => e.type === "PushEvent");
@@ -32,7 +92,7 @@ const calculateLongestStreak = (events = []) => {
     const diffMs = currDay.getTime() - prevDay.getTime();
     const diffDays = diffMs / (24 * 60 * 60 * 1000);
 
-    if (diffDays <= 1) {
+    if (diffDays === 1) {
       currentStreak++;
       maxStreak = Math.max(maxStreak, currentStreak);
     } else {
@@ -40,9 +100,8 @@ const calculateLongestStreak = (events = []) => {
     }
   }
 
-  // Scale to 0-100 (e.g., 365-day streak = 100)
-  // Cap at reasonable value (1 year)
-  return Math.min((maxStreak / 365) * 100, 100);
+  // Scale streak to a 90-day window so short, consistent streaks still matter.
+  return Math.min((maxStreak / 90) * 100, 100);
 };
 
 export const scoreActivity = (events = []) => {
@@ -117,16 +176,14 @@ export const scoreCodeQuality = async (repos = [], owner, githubService) => {
         }
       } catch (error) {
         // Gracefully continue if content fetch fails (e.g., 404 for private repo)
-        console.warn(
-          `Could not fetch contents for ${owner}/${repo.name}: ${error.message}`,
-        );
+        void error;
       }
     }
 
     totalScore += repoPoints;
   }
 
-  const maxScore = sampleRepos.length * 10; // Max 5 existing + 2 readme + 2 tests
+  const maxScore = sampleRepos.length * 9; // Max 5 existing + 2 readme + 2 tests
   return roundScore((totalScore / maxScore) * 100);
 };
 
@@ -139,20 +196,41 @@ export const scoreDiversity = (repos = []) => {
     repos.map((repo) => repo.language).filter(Boolean),
   );
 
-  const topicSet = new Set(repos.flatMap((repo) => repo.topics || []));
+  const projectCategories = new Set();
+
+  for (const repo of repos) {
+    const signals = [repo.language, ...(repo.topics || [])]
+      .filter(Boolean)
+      .map((value) => value.toLowerCase());
+
+    for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+      if (
+        keywords.some((keyword) =>
+          signals.some((signal) => signal.includes(keyword)),
+        )
+      ) {
+        projectCategories.add(category);
+      }
+    }
+  }
 
   const languageScore = Math.min(languageSet.size / 10, 1) * 50;
-  const topicScore = Math.min(topicSet.size / 12, 1) * 50;
+  const categoryScore = Math.min(projectCategories.size / 10, 1) * 50;
 
-  return roundScore(languageScore + topicScore);
+  return roundScore(languageScore + categoryScore);
 };
 
 export const scoreCommunity = (user, repos = [], starredRepos = []) => {
-  const stars = repos.reduce(
+  const ownedRepos = repos.filter((repo) => !repo.fork);
+
+  const stars = ownedRepos.reduce(
     (sum, repo) => sum + (repo.stargazers_count || 0),
     0,
   );
-  const forks = repos.reduce((sum, repo) => sum + (repo.forks_count || 0), 0);
+  const forks = ownedRepos.reduce(
+    (sum, repo) => sum + (repo.forks_count || 0),
+    0,
+  );
   const starredCount = Array.isArray(starredRepos) ? starredRepos.length : 0;
 
   const starsScore = Math.min(Math.log10(stars + 1) / 2, 1) * 40;

@@ -12,10 +12,10 @@ const startServer = async () => {
     validateEnvironment();
     await connectDatabase();
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      process.stdout.write(`Server running on port ${PORT}\n`);
     });
   } catch (error) {
-    console.error("Failed to start server", error);
+    process.stderr.write(`Failed to start server: ${error.message}\n`);
     process.exit(1);
   }
 };

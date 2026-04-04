@@ -5,6 +5,7 @@ import {
   computeScores,
   scoreActivity,
   scoreCodeQuality,
+  scoreDiversity,
 } from "../src/services/scoringService.js";
 
 test("scoreActivity returns 0 for empty events", () => {
@@ -24,7 +25,7 @@ test("scoreActivity returns high score for consistent pushes", () => {
     },
   }));
 
-  // With 50-day streak (50/365 * 100 * 0.05 = 0.68 streak points) + high commits
+  // With 50-day streak (50/90 * 100 * 0.05 = 2.78 streak points) + high commits
   // Total should be high
   const score = scoreActivity(events);
   assert.ok(score >= 60, `Expected score >= 60, got ${score}`);
@@ -42,9 +43,30 @@ test("scoreCodeQuality rewards metadata-rich repos", async () => {
   ];
 
   // Call without githubService (null) to test basic scoring
-  // Scores 5/10 on basic signals (no README/tests detection), so 50%
+  // Scores 5/9 on basic signals (no README/tests detection), so 56%
   const score = await scoreCodeQuality(repos, "testuser", null);
-  assert.ok(score === 50);
+  assert.equal(score, 56);
+});
+
+test("scoreDiversity rewards category coverage, not just repeated tags", () => {
+  const repos = [
+    {
+      language: "JavaScript",
+      topics: ["web", "react"],
+    },
+    {
+      language: "Python",
+      topics: ["data", "analytics"],
+    },
+    {
+      language: "Go",
+      topics: ["cli", "tooling"],
+    },
+  ];
+
+  const score = scoreDiversity(repos);
+  assert.ok(score > 0);
+  assert.ok(score <= 100);
 });
 
 test("computeScores returns bounded category scores and overall", async () => {
@@ -113,4 +135,54 @@ test("computeScores boosts community score when starred repos are present", asyn
   });
 
   assert.ok(withStarred.community > withoutStarred.community);
+});
+
+test("computeScores excludes forked repo stars from community score", async () => {
+  const user = {
+    login: "testuser",
+    followers: 10,
+    bio: "Developer",
+    blog: "https://example.com",
+  };
+
+  const reposWithoutForkBoost = [
+    {
+      language: "JavaScript",
+      topics: ["web"],
+      stargazers_count: 1,
+      forks_count: 0,
+      license: { spdx_id: "MIT" },
+      description: "repo",
+      homepage: "https://example.com",
+      fork: false,
+    },
+  ];
+
+  const reposWithForkBoost = [
+    ...reposWithoutForkBoost,
+    {
+      language: "JavaScript",
+      topics: ["web"],
+      stargazers_count: 1000,
+      forks_count: 500,
+      license: { spdx_id: "MIT" },
+      description: "forked upstream",
+      homepage: "https://example.com",
+      fork: true,
+    },
+  ];
+
+  const baseline = await computeScores(user, reposWithoutForkBoost, [], {
+    githubService: null,
+    username: "testuser",
+    starredRepos: [],
+  });
+
+  const withForkedRepo = await computeScores(user, reposWithForkBoost, [], {
+    githubService: null,
+    username: "testuser",
+    starredRepos: [],
+  });
+
+  assert.equal(withForkedRepo.community, baseline.community);
 });

@@ -81,8 +81,8 @@ const Report = () => {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy link:", err);
+    } catch {
+      setError("Could not copy the report link. Please copy it manually.");
     }
   };
 
@@ -145,7 +145,7 @@ const Report = () => {
           />
         </header>
 
-{loading && <ReportSkeleton />}
+        {loading && <ReportSkeleton />}
         {!loading && error && <p className="status error">{error}</p>}
 
         {!loading && !error && report && (
@@ -162,6 +162,11 @@ const Report = () => {
                   Followers: {report.followers} · Public repos:{" "}
                   {report.publicRepos}
                 </p>
+                {report.createdAt && (
+                  <p className="muted">
+                    Joined: {new Date(report.createdAt).toLocaleDateString()}
+                  </p>
+                )}
                 <p>{report.bio || "No bio available."}</p>
                 <p className="muted">
                   Cache: {report.cache?.hit ? "hit" : "miss"}

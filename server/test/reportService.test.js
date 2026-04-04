@@ -47,6 +47,7 @@ test("buildReportFromGitHub returns normalized report payload", async () => {
       avatar_url: "https://avatar",
       name: "Dev",
       bio: "builder",
+      created_at: "2021-03-01T00:00:00Z",
       followers: 10,
       public_repos: 2,
     }),
@@ -84,6 +85,7 @@ test("buildReportFromGitHub returns normalized report payload", async () => {
   const report = await buildReportFromGitHub("devuser", githubService);
 
   assert.equal(report.username, "devuser");
+  assert.equal(report.createdAt, "2021-03-01T00:00:00Z");
   assert.equal(report.topRepos.length, 2);
   assert.ok(Array.isArray(report.languages));
   assert.equal(report.heatmapData.length, 84);

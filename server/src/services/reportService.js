@@ -90,6 +90,7 @@ export const buildReportFromGitHub = async (
     username,
     avatarUrl: user.avatar_url,
     name: user.name,
+    createdAt: user.created_at,
     bio: user.bio,
     followers: user.followers,
     publicRepos: user.public_repos,

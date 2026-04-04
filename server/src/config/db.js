@@ -4,7 +4,9 @@ export const connectDatabase = async () => {
   const mongoUri = process.env.MONGODB_URI;
 
   if (!mongoUri) {
-    console.warn("MONGODB_URI is not set. Running without database cache.");
+    process.stderr.write(
+      "MONGODB_URI is not set. Running without database cache.\n",
+    );
     return false;
   }
 
@@ -12,6 +14,6 @@ export const connectDatabase = async () => {
     serverSelectionTimeoutMS: 5000,
   });
 
-  console.log("MongoDB connected");
+  process.stdout.write("MongoDB connected\n");
   return true;
 };

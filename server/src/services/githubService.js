@@ -31,9 +31,6 @@ const withRetry = async (fn, maxRetries = 3) => {
           : Math.pow(2, attempt) * 1000; // Exponential backoff
 
         if (attempt < maxRetries) {
-          console.warn(
-            `GitHub rate limited (attempt ${attempt}/${maxRetries}). Waiting ${waitMs}ms before retry...`,
-          );
           await new Promise((resolve) => setTimeout(resolve, waitMs));
           continue;
         }

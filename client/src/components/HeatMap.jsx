@@ -24,11 +24,8 @@ const HeatMap = ({ heatmapData = [] }) => {
     weeks.push(recent.slice(i, i + 7));
   }
 
-  // Get date range for month labels
-  const firstDate = new Date(recent[0].date);
+  // Label the first week of each month so labels align with month starts.
   const monthLabels = [];
-  let currentMonth = firstDate.getMonth();
-  let monthStartWeek = 0;
   const monthNames = [
     "Jan",
     "Feb",
@@ -46,17 +43,13 @@ const HeatMap = ({ heatmapData = [] }) => {
 
   for (let w = 0; w < weeks.length; w++) {
     const weekStartDate = new Date(weeks[w][0].date);
-    if (weekStartDate.getMonth() !== currentMonth) {
-      if (
-        monthLabels.length === 0 ||
-        monthLabels[monthLabels.length - 1].week !== w
-      ) {
-        monthLabels.push({
-          month: monthNames[currentMonth],
-          week: w,
-        });
-      }
-      currentMonth = weekStartDate.getMonth();
+    const weekMonth = weekStartDate.getMonth();
+    const lastLabeledMonth = monthLabels[monthLabels.length - 1]?.month;
+    if (!lastLabeledMonth || lastLabeledMonth !== monthNames[weekMonth]) {
+      monthLabels.push({
+        month: monthNames[weekMonth],
+        week: w,
+      });
     }
   }
 

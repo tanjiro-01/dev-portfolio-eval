@@ -14,6 +14,7 @@ test("createGitHubService.getUser returns octokit user payload", async () => {
     },
     activity: {
       listPublicEventsForUser: async () => ({ data: [] }),
+      listReposStarredByUser: async () => ({ data: [] }),
     },
   };
 
@@ -36,6 +37,7 @@ test("createGitHubService maps octokit 404 to app error", async () => {
     },
     activity: {
       listPublicEventsForUser: async () => ({ data: [] }),
+      listReposStarredByUser: async () => ({ data: [] }),
     },
   };
 
@@ -49,4 +51,28 @@ test("createGitHubService maps octokit 404 to app error", async () => {
       return true;
     },
   );
+});
+
+test("createGitHubService.getStarred returns starred repositories", async () => {
+  const octokitMock = {
+    users: {
+      getByUsername: async ({ username }) => ({ data: { login: username } }),
+    },
+    repos: {
+      listForUser: async () => ({ data: [] }),
+      getContent: async () => ({ data: [] }),
+    },
+    activity: {
+      listPublicEventsForUser: async () => ({ data: [] }),
+      listReposStarredByUser: async ({ username }) => ({
+        data: [{ full_name: `${username}/awesome-repo` }],
+      }),
+    },
+  };
+
+  const service = createGitHubService(octokitMock);
+  const starred = await service.getStarred("octocat");
+
+  assert.equal(starred.length, 1);
+  assert.equal(starred[0].full_name, "octocat/awesome-repo");
 });

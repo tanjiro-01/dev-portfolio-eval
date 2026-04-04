@@ -77,6 +77,8 @@ test("buildReportFromGitHub returns normalized report payload", async () => {
       },
     ],
     getEvents: async () => [],
+    getStarred: async () => [{ full_name: "someone/project" }],
+    getRepoContents: async () => [],
   };
 
   const report = await buildReportFromGitHub("devuser", githubService);

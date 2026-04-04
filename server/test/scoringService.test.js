@@ -78,3 +78,39 @@ test("computeScores returns bounded category scores and overall", async () => {
     assert.ok(value >= 0 && value <= 100);
   }
 });
+
+test("computeScores boosts community score when starred repos are present", async () => {
+  const user = {
+    login: "testuser",
+    followers: 10,
+    bio: "Developer",
+    blog: "https://example.com",
+  };
+
+  const repos = [
+    {
+      language: "JavaScript",
+      topics: ["web"],
+      stargazers_count: 4,
+      forks_count: 2,
+      license: { spdx_id: "MIT" },
+      description: "repo",
+      homepage: "https://example.com",
+      fork: false,
+    },
+  ];
+
+  const withoutStarred = await computeScores(user, repos, [], {
+    githubService: null,
+    username: "testuser",
+    starredRepos: [],
+  });
+
+  const withStarred = await computeScores(user, repos, [], {
+    githubService: null,
+    username: "testuser",
+    starredRepos: Array.from({ length: 20 }, (_, i) => ({ id: i + 1 })),
+  });
+
+  assert.ok(withStarred.community > withoutStarred.community);
+});

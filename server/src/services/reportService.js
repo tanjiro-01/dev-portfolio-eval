@@ -73,15 +73,17 @@ export const buildReportFromGitHub = async (
   username,
   githubService = getGitHubService(),
 ) => {
-  const [user, repos, events] = await Promise.all([
+  const [user, repos, events, starredRepos] = await Promise.all([
     githubService.getUser(username),
     githubService.getRepos(username),
     githubService.getEvents(username),
+    githubService.getStarred(username),
   ]);
 
   const scores = await computeScores(user, repos, events, {
     githubService,
     username,
+    starredRepos,
   });
 
   return {

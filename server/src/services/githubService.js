@@ -88,6 +88,20 @@ export const createGitHubService = (octokit = createOctokit()) => {
     }
   };
 
+  const getStarred = async (username) => {
+    try {
+      const response = await withRetry(() =>
+        octokit.activity.listReposStarredByUser({
+          username,
+          per_page: 100,
+        }),
+      );
+      return response.data;
+    } catch (error) {
+      throw mapGitHubError(error, username);
+    }
+  };
+
   const getRepoContents = async (owner, repo, path = "") => {
     try {
       const response = await withRetry(() =>
@@ -107,6 +121,7 @@ export const createGitHubService = (octokit = createOctokit()) => {
     getUser,
     getRepos,
     getEvents,
+    getStarred,
     getRepoContents,
   };
 };

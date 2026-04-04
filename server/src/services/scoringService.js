@@ -147,18 +147,22 @@ export const scoreDiversity = (repos = []) => {
   return roundScore(languageScore + topicScore);
 };
 
-export const scoreCommunity = (user, repos = []) => {
+export const scoreCommunity = (user, repos = [], starredRepos = []) => {
   const stars = repos.reduce(
     (sum, repo) => sum + (repo.stargazers_count || 0),
     0,
   );
   const forks = repos.reduce((sum, repo) => sum + (repo.forks_count || 0), 0);
+  const starredCount = Array.isArray(starredRepos) ? starredRepos.length : 0;
 
-  const starsScore = Math.min(Math.log10(stars + 1) / 2, 1) * 45;
-  const forksScore = Math.min(Math.log10(forks + 1) / 2, 1) * 35;
+  const starsScore = Math.min(Math.log10(stars + 1) / 2, 1) * 40;
+  const forksScore = Math.min(Math.log10(forks + 1) / 2, 1) * 30;
   const followerScore = Math.min((user?.followers || 0) / 50, 1) * 20;
+  const starredSignalScore = Math.min(Math.log10(starredCount + 1) / 2, 1) * 10;
 
-  return roundScore(starsScore + forksScore + followerScore);
+  return roundScore(
+    starsScore + forksScore + followerScore + starredSignalScore,
+  );
 };
 
 export const scoreHiringReady = (user, repos = []) => {
@@ -180,12 +184,16 @@ export const computeScores = async (
   events = [],
   options = {},
 ) => {
-  const { githubService = null, username = user.login } = options;
+  const {
+    githubService = null,
+    username = user.login,
+    starredRepos = [],
+  } = options;
 
   const activity = scoreActivity(events);
   const codeQuality = await scoreCodeQuality(repos, username, githubService);
   const diversity = scoreDiversity(repos);
-  const community = scoreCommunity(user, repos);
+  const community = scoreCommunity(user, repos, starredRepos);
   const hiringReady = scoreHiringReady(user, repos);
 
   const overall = roundScore(

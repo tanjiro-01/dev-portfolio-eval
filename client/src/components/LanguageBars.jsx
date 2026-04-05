@@ -39,9 +39,12 @@ const getLanguageColor = (language) => {
 const LanguageBars = ({ languages = [] }) => {
   if (!languages.length) {
     return (
-      <section className="panel">
-        <h2>Language Distribution</h2>
-        <p className="muted">No language data available.</p>
+      <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+        <h2 className="text-xl font-semibold mb-2 flex items-center gap-2 text-slate-200">
+          <span className="w-2 h-6 bg-orange-500 rounded-full inline-block"></span>
+          Language Distribution
+        </h2>
+        <p className="text-sm text-slate-400">No language data available.</p>
       </section>
     );
   }
@@ -62,13 +65,17 @@ const LanguageBars = ({ languages = [] }) => {
   const chartOptions = {
     indexAxis: "y",
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: true,
-        position: "top",
+        display: false,
       },
       tooltip: {
+        backgroundColor: "rgba(15, 23, 42, 0.9)",
+        titleColor: "#fff",
+        bodyColor: "#cbd5e1",
+        borderColor: "rgba(255,255,255,0.1)",
+        borderWidth: 1,
         callbacks: {
           label: (context) => `${context.parsed.x}% of repositories`,
         },
@@ -78,17 +85,31 @@ const LanguageBars = ({ languages = [] }) => {
       x: {
         beginAtZero: true,
         max: 100,
+        grid: { color: "rgba(255, 255, 255, 0.05)" },
         ticks: {
+          color: "#94a3b8",
           callback: (value) => `${value}%`,
+          font: { family: "Inter" }
         },
       },
+      y: {
+        grid: { display: false },
+        ticks: {
+          color: "#cbd5e1",
+          font: { family: "Inter", weight: "500" }
+        }
+      }
     },
   };
 
   return (
-    <section className="panel">
-      <h2>Language Distribution</h2>
-      <div style={{ height: "300px", position: "relative" }}>
+    <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl relative group overflow-hidden">
+      <div className="absolute -inset-1 bg-gradient-to-r from-orange-500/10 to-amber-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+      <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 relative z-10 text-slate-200">
+        <span className="w-2 h-6 bg-orange-500 rounded-full inline-block"></span>
+        Language Distribution
+      </h2>
+      <div className="relative h-64 z-10 pl-2">
         <Bar data={chartData} options={chartOptions} />
       </div>
     </section>

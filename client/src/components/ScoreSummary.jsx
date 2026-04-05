@@ -13,44 +13,40 @@ const CircularProgress = ({ score, max = 100 }) => {
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div style={{ position: "relative", width: 140, height: 140 }}>
-      <svg width="140" height="140" style={{ transform: "rotate(-90deg)" }}>
+    <div className="relative w-40 h-40">
+      <svg width="160" height="160" className="-rotate-90">
         <circle
-          cx="70"
-          cy="70"
+          cx="80"
+          cy="80"
           r={radius}
           fill="none"
-          stroke="#e0e0e0"
+          className="stroke-slate-800"
           strokeWidth="8"
         />
         <circle
-          cx="70"
-          cy="70"
+          cx="80"
+          cy="80"
           r={radius}
           fill="none"
-          stroke="#4CAF50"
+          stroke="url(#blue-gradient)"
           strokeWidth="8"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
-          style={{ transition: "stroke-dashoffset 0.5s ease" }}
+          className="transition-all duration-700 ease-out"
         />
+        <defs>
+          <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#8b5cf6" />
+          </linearGradient>
+        </defs>
       </svg>
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-        }}
-      >
-        <div style={{ fontSize: 32, fontWeight: "bold", color: "#333" }}>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-400">
           {score}
         </div>
-        <div style={{ fontSize: 12, color: "#999" }}>out of 100</div>
+        <div className="text-xs text-slate-500 uppercase tracking-widest mt-1">out of 100</div>
       </div>
     </div>
   );
@@ -58,18 +54,20 @@ const CircularProgress = ({ score, max = 100 }) => {
 
 const ScoreSummary = ({ scores }) => {
   return (
-    <section className="panel">
-      <h2>Score Summary</h2>
-      <div
-        style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}
-      >
+    <section className="@container bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
+      <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/10 to-violet-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+      <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 relative z-10 text-slate-200">
+        <span className="w-2 h-6 bg-blue-500 rounded-full inline-block"></span>
+        Score Summary
+      </h2>
+      <div className="flex justify-center mb-8 relative z-10">
         <CircularProgress score={scores.overall} />
       </div>
-      <div className="scores-grid">
+      <div className="grid grid-cols-2 @md:grid-cols-3 gap-3 relative z-10">
         {scoreItems.map(([label, key]) => (
-          <article key={key} className="score-item">
-            <span>{label}</span>
-            <strong>{scores[key]}</strong>
+          <article key={key} className="flex flex-col @sm:flex-row justify-between @sm:items-center bg-slate-800/40 hover:bg-slate-800/80 transition-colors border border-slate-700/50 rounded-xl p-3 shadow-inner">
+            <span className="text-sm text-slate-400 mb-1 @sm:mb-0">{label}</span>
+            <strong className="text-lg font-mono text-slate-200">{scores[key]}</strong>
           </article>
         ))}
       </div>

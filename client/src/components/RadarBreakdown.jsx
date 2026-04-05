@@ -20,7 +20,7 @@ ChartJS.register(
 
 const RadarBreakdown = ({ scores }) => {
   const data = {
-    labels: ["Activity", "Code Quality", "Diversity", "Community", "Hiring"],
+    labels: ["Activity", "Quality", "Diversity", "Community", "Hiring"],
     datasets: [
       {
         label: "Score",
@@ -31,8 +31,12 @@ const RadarBreakdown = ({ scores }) => {
           scores.community,
           scores.hiringReady,
         ],
-        borderColor: "#0d6efd",
-        backgroundColor: "rgba(13, 110, 253, 0.18)",
+        borderColor: "#8b5cf6",
+        backgroundColor: "rgba(139, 92, 246, 0.2)",
+        pointBackgroundColor: "#8b5cf6",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "#8b5cf6",
         borderWidth: 2,
       },
     ],
@@ -45,23 +49,35 @@ const RadarBreakdown = ({ scores }) => {
       r: {
         min: 0,
         max: 100,
-        ticks: {
-          stepSize: 20,
-          display: false,
+        ticks: { stepSize: 20, display: false },
+        grid: { color: "rgba(255, 255, 255, 0.1)" },
+        angleLines: { color: "rgba(255, 255, 255, 0.1)" },
+        pointLabels: {
+          color: "#94a3b8",
+          font: { family: "Inter", size: 12 },
         },
       },
     },
     plugins: {
-      legend: {
-        display: false,
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: "rgba(15, 23, 42, 0.9)",
+        titleColor: "#fff",
+        bodyColor: "#cbd5e1",
+        borderColor: "rgba(255,255,255,0.1)",
+        borderWidth: 1,
       },
     },
   };
 
   return (
-    <section className="panel chart-panel">
-      <h2>Radar Breakdown</h2>
-      <div className="chart-box">
+    <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl relative group">
+      <div className="absolute -inset-1 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+      <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 relative z-10 text-slate-200">
+        <span className="w-2 h-6 bg-violet-500 rounded-full inline-block"></span>
+        Radar Breakdown
+      </h2>
+      <div className="relative h-64 z-10">
         <Radar data={data} options={options} />
       </div>
     </section>

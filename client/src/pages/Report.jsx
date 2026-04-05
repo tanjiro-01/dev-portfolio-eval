@@ -4,13 +4,8 @@ import { Helmet } from "react-helmet-async";
 
 import { fetchProfileReport } from "../api/http.js";
 import SearchForm from "../components/SearchForm.jsx";
-import ScoreSummary from "../components/ScoreSummary.jsx";
-import RepoList from "../components/RepoList.jsx";
-import RadarBreakdown from "../components/RadarBreakdown.jsx";
-import LanguageBars from "../components/LanguageBars.jsx";
-import HeatMap from "../components/HeatMap.jsx";
-import ScoringMethodology from "../components/ScoringMethodology.jsx";
 import ReportSkeleton from "../components/ReportSkeleton.jsx";
+import ReportLayout from "../components/ReportLayout.jsx";
 
 const Report = () => {
   const { username = "" } = useParams();
@@ -26,7 +21,6 @@ const Report = () => {
     [username],
   );
 
-  // Update document title when username or report loads
   useEffect(() => {
     if (normalizedUsername) {
       document.title = `${normalizedUsername} — Portfolio Evaluator`;
@@ -114,76 +108,44 @@ const Report = () => {
         />
       </Helmet>
 
-      <main className="page">
-        <header className="report-header">
+      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col gap-8 min-h-screen">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-800">
           <div>
-            <p className="eyebrow">Report</p>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <h1>{normalizedUsername || "Unknown User"}</h1>
+            <p className="text-xs uppercase tracking-widest text-blue-500 font-bold mb-2">Report</p>
+            <div className="flex flex-wrap items-center gap-4">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-100">{normalizedUsername || "Unknown User"}</h1>
               <button
                 onClick={handleCopyLink}
-                style={{
-                  padding: "8px 12px",
-                  fontSize: 14,
-                  backgroundColor: copied ? "#4CAF50" : "#2196F3",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 4,
-                  cursor: "pointer",
-                  transition: "background-color 0.2s",
-                }}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all border ${
+                  copied
+                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]"
+                    : "bg-blue-500/10 text-blue-400 border-blue-500/50 hover:bg-blue-500/20"
+                }`}
                 title="Copy report link to clipboard"
               >
-                {copied ? "✓ Copied" : "📋 Copy Link"}
+                {copied ? "✓ Copied!" : "📋 Copy Link"}
               </button>
             </div>
           </div>
-          <SearchForm
-            defaultValue={normalizedUsername}
-            onSubmit={handleSearch}
-            loading={loading}
-          />
+          <div className="w-full md:w-auto md:min-w-[360px]">
+            <SearchForm
+              defaultValue={normalizedUsername}
+              onSubmit={handleSearch}
+              loading={loading}
+            />
+          </div>
         </header>
 
         {loading && <ReportSkeleton />}
-        {!loading && error && <p className="status error">{error}</p>}
+        {!loading && error && (
+          <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 p-4 rounded-xl flex items-center gap-3">
+             <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+             <p>{error}</p>
+          </div>
+        )}
 
         {!loading && !error && report && (
-          <section className="report-layout">
-            <section className="panel profile-panel">
-              <img
-                src={report.avatarUrl}
-                alt={`${report.username} avatar`}
-                className="avatar"
-              />
-              <div>
-                <h2>{report.name || report.username}</h2>
-                <p className="muted">
-                  Followers: {report.followers} · Public repos:{" "}
-                  {report.publicRepos}
-                </p>
-                <p className="muted">
-                  Pinned repos: {report.pinnedReposCount ?? 0}
-                </p>
-                {report.createdAt && (
-                  <p className="muted">
-                    Joined: {new Date(report.createdAt).toLocaleDateString()}
-                  </p>
-                )}
-                <p>{report.bio || "No bio available."}</p>
-                <p className="muted">
-                  Cache: {report.cache?.hit ? "hit" : "miss"}
-                </p>
-              </div>
-            </section>
-
-            <ScoreSummary scores={report.scores} />
-            <ScoringMethodology />
-            <RadarBreakdown scores={report.scores} />
-            <LanguageBars languages={report.languages} />
-            <HeatMap heatmapData={report.heatmapData} />
-            <RepoList repos={report.topRepos} />
-          </section>
+          <ReportLayout report={report} />
         )}
       </main>
     </>

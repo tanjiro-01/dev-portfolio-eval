@@ -16,6 +16,9 @@ test("createGitHubService.getUser returns octokit user payload", async () => {
       listPublicEventsForUser: async () => ({ data: [] }),
       listReposStarredByUser: async () => ({ data: [] }),
     },
+    graphql: async () => ({
+      user: { pinnedItems: { nodes: [] } },
+    }),
   };
 
   const service = createGitHubService(octokitMock);
@@ -39,6 +42,9 @@ test("createGitHubService maps octokit 404 to app error", async () => {
       listPublicEventsForUser: async () => ({ data: [] }),
       listReposStarredByUser: async () => ({ data: [] }),
     },
+    graphql: async () => ({
+      user: { pinnedItems: { nodes: [] } },
+    }),
   };
 
   const service = createGitHubService(octokitMock);
@@ -68,6 +74,9 @@ test("createGitHubService.getStarred returns starred repositories", async () => 
         data: [{ full_name: `${username}/awesome-repo` }],
       }),
     },
+    graphql: async () => ({
+      user: { pinnedItems: { nodes: [] } },
+    }),
   };
 
   const service = createGitHubService(octokitMock);
@@ -75,4 +84,35 @@ test("createGitHubService.getStarred returns starred repositories", async () => 
 
   assert.equal(starred.length, 1);
   assert.equal(starred[0].full_name, "octocat/awesome-repo");
+});
+
+test("createGitHubService.getPinnedRepos returns pinned repositories", async () => {
+  const octokitMock = {
+    users: {
+      getByUsername: async ({ username }) => ({ data: { login: username } }),
+    },
+    repos: {
+      listForUser: async () => ({ data: [] }),
+      getContent: async () => ({ data: [] }),
+    },
+    activity: {
+      listPublicEventsForUser: async () => ({ data: [] }),
+      listReposStarredByUser: async () => ({ data: [] }),
+    },
+    graphql: async () => ({
+      user: {
+        pinnedItems: {
+          nodes: [
+            { name: "portfolio", url: "https://github.com/octocat/portfolio" },
+          ],
+        },
+      },
+    }),
+  };
+
+  const service = createGitHubService(octokitMock);
+  const pinned = await service.getPinnedRepos("octocat");
+
+  assert.equal(pinned.length, 1);
+  assert.equal(pinned[0].name, "portfolio");
 });

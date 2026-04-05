@@ -73,17 +73,19 @@ export const buildReportFromGitHub = async (
   username,
   githubService = getGitHubService(),
 ) => {
-  const [user, repos, events, starredRepos] = await Promise.all([
+  const [user, repos, events, starredRepos, pinnedRepos] = await Promise.all([
     githubService.getUser(username),
     githubService.getRepos(username),
     githubService.getEvents(username),
     githubService.getStarred(username),
+    githubService.getPinnedRepos(username),
   ]);
 
   const scores = await computeScores(user, repos, events, {
     githubService,
     username,
     starredRepos,
+    pinnedRepos,
   });
 
   return {
@@ -94,6 +96,7 @@ export const buildReportFromGitHub = async (
     bio: user.bio,
     followers: user.followers,
     publicRepos: user.public_repos,
+    pinnedReposCount: pinnedRepos.length,
     scores,
     topRepos: toTopRepos(repos),
     languages: toLanguages(repos),

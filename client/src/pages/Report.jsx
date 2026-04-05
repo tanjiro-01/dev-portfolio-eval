@@ -162,6 +162,9 @@ const Report = () => {
                   Followers: {report.followers} · Public repos:{" "}
                   {report.publicRepos}
                 </p>
+                <p className="muted">
+                  Pinned repos: {report.pinnedReposCount ?? 0}
+                </p>
                 {report.createdAt && (
                   <p className="muted">
                     Joined: {new Date(report.createdAt).toLocaleDateString()}

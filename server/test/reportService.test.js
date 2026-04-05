@@ -79,6 +79,7 @@ test("buildReportFromGitHub returns normalized report payload", async () => {
     ],
     getEvents: async () => [],
     getStarred: async () => [{ full_name: "someone/project" }],
+    getPinnedRepos: async () => [{ name: "portfolio", url: "https://repo/p" }],
     getRepoContents: async () => [],
   };
 
@@ -86,6 +87,7 @@ test("buildReportFromGitHub returns normalized report payload", async () => {
 
   assert.equal(report.username, "devuser");
   assert.equal(report.createdAt, "2021-03-01T00:00:00Z");
+  assert.equal(report.pinnedReposCount, 1);
   assert.equal(report.topRepos.length, 2);
   assert.ok(Array.isArray(report.languages));
   assert.equal(report.heatmapData.length, 84);

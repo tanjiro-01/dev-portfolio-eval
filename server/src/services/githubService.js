@@ -99,6 +99,39 @@ export const createGitHubService = (octokit = createOctokit()) => {
     }
   };
 
+  const getPinnedRepos = async (username) => {
+    try {
+      const response = await withRetry(() =>
+        octokit.graphql(
+          `
+            query ($login: String!) {
+              user(login: $login) {
+                pinnedItems(first: 6, types: REPOSITORY) {
+                  nodes {
+                    ... on Repository {
+                      name
+                      url
+                    }
+                  }
+                }
+              }
+            }
+          `,
+          { login: username },
+        ),
+      );
+
+      return response?.user?.pinnedItems?.nodes || [];
+    } catch (error) {
+      // Pinned repos are a hiring-readiness signal, so we degrade safely if
+      // GraphQL is unavailable for a token or account.
+      if (error.status === 403 || error.status === 404) {
+        return [];
+      }
+      throw mapGitHubError(error, username);
+    }
+  };
+
   const getRepoContents = async (owner, repo, path = "") => {
     try {
       const response = await withRetry(() =>
@@ -119,6 +152,7 @@ export const createGitHubService = (octokit = createOctokit()) => {
     getRepos,
     getEvents,
     getStarred,
+    getPinnedRepos,
     getRepoContents,
   };
 };

@@ -94,6 +94,7 @@ test("computeScores returns bounded category scores and overall", async () => {
   const scores = await computeScores(user, repos, [], {
     githubService: null,
     username: "testuser",
+    pinnedRepos: [],
   });
 
   for (const value of Object.values(scores)) {
@@ -126,12 +127,14 @@ test("computeScores boosts community score when starred repos are present", asyn
     githubService: null,
     username: "testuser",
     starredRepos: [],
+    pinnedRepos: [],
   });
 
   const withStarred = await computeScores(user, repos, [], {
     githubService: null,
     username: "testuser",
     starredRepos: Array.from({ length: 20 }, (_, i) => ({ id: i + 1 })),
+    pinnedRepos: [],
   });
 
   assert.ok(withStarred.community > withoutStarred.community);
@@ -176,13 +179,54 @@ test("computeScores excludes forked repo stars from community score", async () =
     githubService: null,
     username: "testuser",
     starredRepos: [],
+    pinnedRepos: [],
   });
 
   const withForkedRepo = await computeScores(user, reposWithForkBoost, [], {
     githubService: null,
     username: "testuser",
     starredRepos: [],
+    pinnedRepos: [],
   });
 
   assert.equal(withForkedRepo.community, baseline.community);
+});
+
+test("computeScores hiring readiness includes pinned repositories signal", async () => {
+  const user = {
+    login: "testuser",
+    followers: 10,
+    bio: "Developer",
+    blog: "https://example.com",
+    location: "Earth",
+  };
+
+  const repos = [
+    {
+      language: "JavaScript",
+      topics: ["web"],
+      stargazers_count: 4,
+      forks_count: 2,
+      license: { spdx_id: "MIT" },
+      description: "repo",
+      homepage: "https://example.com",
+      fork: false,
+    },
+  ];
+
+  const noPinned = await computeScores(user, repos, [], {
+    githubService: null,
+    username: "testuser",
+    starredRepos: [],
+    pinnedRepos: [],
+  });
+
+  const withPinned = await computeScores(user, repos, [], {
+    githubService: null,
+    username: "testuser",
+    starredRepos: [],
+    pinnedRepos: [{ name: "portfolio" }],
+  });
+
+  assert.ok(withPinned.hiringReady > noPinned.hiringReady);
 });

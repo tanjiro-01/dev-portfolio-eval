@@ -233,10 +233,10 @@ export const scoreCommunity = (user, repos = [], starredRepos = []) => {
   );
   const starredCount = Array.isArray(starredRepos) ? starredRepos.length : 0;
 
-  const starsScore = Math.min(Math.log10(stars + 1) / 2, 1) * 40;
-  const forksScore = Math.min(Math.log10(forks + 1) / 2, 1) * 30;
+  const starsScore = Math.min(Math.log10(stars + 1) / 2, 1) * 43;
+  const forksScore = Math.min(Math.log10(forks + 1) / 2, 1) * 34;
   const followerScore = Math.min((user?.followers || 0) / 50, 1) * 20;
-  const starredSignalScore = Math.min(Math.log10(starredCount + 1) / 2, 1) * 10;
+  const starredSignalScore = Math.min(Math.log10(starredCount + 1) / 2, 1) * 3;
 
   return roundScore(
     starsScore + forksScore + followerScore + starredSignalScore,
@@ -244,6 +244,7 @@ export const scoreCommunity = (user, repos = [], starredRepos = []) => {
 };
 
 export const scoreHiringReady = (user, repos = []) => {
+  const pinnedRepos = Array.isArray(user?.pinnedRepos) ? user.pinnedRepos : [];
   let points = 0;
 
   if (user?.bio) points += 20;
@@ -251,7 +252,7 @@ export const scoreHiringReady = (user, repos = []) => {
   // Location or company is more fair than email (which is almost always private)
   if (user?.location || user?.company) points += 20;
   if ((repos || []).some((repo) => !repo.fork)) points += 20;
-  if ((repos || []).length >= 3) points += 20;
+  if (pinnedRepos.length > 0) points += 20;
 
   return roundScore(points);
 };
@@ -266,13 +267,19 @@ export const computeScores = async (
     githubService = null,
     username = user.login,
     starredRepos = [],
+    pinnedRepos = [],
   } = options;
+
+  const userWithPinnedRepos = {
+    ...user,
+    pinnedRepos,
+  };
 
   const activity = scoreActivity(events);
   const codeQuality = await scoreCodeQuality(repos, username, githubService);
   const diversity = scoreDiversity(repos);
-  const community = scoreCommunity(user, repos, starredRepos);
-  const hiringReady = scoreHiringReady(user, repos);
+  const community = scoreCommunity(userWithPinnedRepos, repos, starredRepos);
+  const hiringReady = scoreHiringReady(userWithPinnedRepos, repos);
 
   const overall = roundScore(
     activity * 0.25 +

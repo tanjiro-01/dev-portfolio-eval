@@ -132,6 +132,51 @@ export const createGitHubService = (octokit = createOctokit()) => {
     }
   };
 
+  const getContributionCalendar = async (username) => {
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+    try {
+      const response = await withRetry(() =>
+        octokit.graphql(
+          `
+            query ($login: String!, $from: DateTime!, $to: DateTime!) {
+              user(login: $login) {
+                contributionsCollection(from: $from, to: $to) {
+                  contributionCalendar {
+                    totalContributions
+                    weeks {
+                      contributionDays {
+                        date
+                        contributionCount
+                      }
+                    }
+                  }
+                  totalCommitContributions
+                  totalPullRequestContributions
+                  totalIssueContributions
+                }
+              }
+            }
+          `,
+          {
+            login: username,
+            from: oneYearAgo.toISOString(),
+            to: new Date().toISOString(),
+          },
+        ),
+      );
+
+      return (
+        response?.user?.contributionsCollection?.contributionCalendar || null
+      );
+    } catch (error) {
+      // Degrade gracefully — fall back to an empty calendar if GraphQL fails.
+      void error;
+      return null;
+    }
+  };
+
   const getRepoContents = async (owner, repo, path = "") => {
     try {
       const response = await withRetry(() =>
@@ -153,6 +198,7 @@ export const createGitHubService = (octokit = createOctokit()) => {
     getEvents,
     getStarred,
     getPinnedRepos,
+    getContributionCalendar,
     getRepoContents,
   };
 };

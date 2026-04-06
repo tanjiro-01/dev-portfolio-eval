@@ -60,37 +60,48 @@ const CATEGORY_KEYWORDS = {
   blockchain: ["blockchain", "web3", "solidity", "ethereum"],
 };
 
-// Calculate longest consecutive day streak from events
-const calculateLongestStreak = (events = []) => {
+// Calculate longest consecutive day streak from contribution calendar days
+const calculateStreakFromCalendar = (weeks = []) => {
+  const days = weeks
+    .flatMap((w) => w.contributionDays)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  let maxStreak = 0;
+  let currentStreak = 0;
+
+  for (const day of days) {
+    if (day.contributionCount > 0) {
+      currentStreak++;
+      maxStreak = Math.max(maxStreak, currentStreak);
+    } else {
+      currentStreak = 0;
+    }
+  }
+
+  return maxStreak;
+};
+
+// Legacy streak calculator used as fallback for event-based scoring
+const calculateLongestStreakFromEvents = (events = []) => {
   const pushEvents = events.filter((e) => e.type === "PushEvent");
 
   if (pushEvents.length === 0) {
     return 0;
   }
 
-  // Group events by date (YYYY-MM-DD)
   const activeDays = new Set(
     pushEvents.map((e) => new Date(e.created_at).toISOString().split("T")[0]),
   );
 
-  if (activeDays.size === 0) {
-    return 0;
-  }
-
-  // Sort days chronologically
   const sortedDays = Array.from(activeDays).sort();
 
-  // Find longest consecutive streak
   let maxStreak = 1;
   let currentStreak = 1;
 
   for (let i = 1; i < sortedDays.length; i++) {
     const prevDay = new Date(sortedDays[i - 1]);
     const currDay = new Date(sortedDays[i]);
-
-    // Check if current day is consecutive (within 1 day)
-    const diffMs = currDay.getTime() - prevDay.getTime();
-    const diffDays = diffMs / (24 * 60 * 60 * 1000);
+    const diffDays = (currDay - prevDay) / (24 * 60 * 60 * 1000);
 
     if (diffDays === 1) {
       currentStreak++;
@@ -100,11 +111,46 @@ const calculateLongestStreak = (events = []) => {
     }
   }
 
-  // Scale streak to a 90-day window so short, consistent streaks still matter.
   return Math.min((maxStreak / 90) * 100, 100);
 };
 
-export const scoreActivity = (events = []) => {
+// Primary: Score activity from a full-year GraphQL contribution calendar.
+// This is accurate because it counts all contribution types (commits, PRs,
+// reviews, issues) with NO event cap, and covers the full year.
+const scoreActivityFromCalendar = (contributionCalendar) => {
+  const { weeks } = contributionCalendar;
+
+  const allDays = weeks
+    .flatMap((w) => w.contributionDays)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  // Last 90 days
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 90);
+  const cutoffStr = cutoff.toISOString().slice(0, 10);
+
+  const last90Days = allDays.filter((d) => d.date >= cutoffStr);
+  const totalLast90 = last90Days.reduce((s, d) => s + d.contributionCount, 0);
+  const activeDaysLast90 = last90Days.filter(
+    (d) => d.contributionCount > 0,
+  ).length;
+
+  const maxStreak = calculateStreakFromCalendar(weeks);
+
+  // 3-component score (each capped at its weight):
+  // - Volume:      up to 40 pts  (200 contributions in 90d = max)
+  // - Consistency: up to 40 pts  (60 active days out of 90 = max)
+  // - Streak:      up to 20 pts  (30-day consecutive streak = max)
+  const volumeScore = Math.min(totalLast90 / 200, 1) * 40;
+  const consistencyScore = Math.min(activeDaysLast90 / 60, 1) * 40;
+  const streakScore = Math.min(maxStreak / 30, 1) * 20;
+
+  return roundScore(volumeScore + consistencyScore + streakScore);
+};
+
+// Fallback: Event-based scoring used when GraphQL is unavailable.
+// Less accurate due to the 300-event cap on the REST Events API.
+const scoreActivityFromEvents = (events = []) => {
   const now = Date.now();
   const ninetyDaysAgo = now - 90 * 24 * 60 * 60 * 1000;
 
@@ -120,12 +166,27 @@ export const scoreActivity = (events = []) => {
   );
 
   const commitPoints = Math.min(totalCommits / 20, 1) * 20;
-
-  // NEW: Calculate actual longest consecutive day streak from ALL events
-  const longestStreak = calculateLongestStreak(events);
-  const streakPoints = longestStreak * 0.05; // Scale to max 5 points
+  const longestStreak = calculateLongestStreakFromEvents(events);
+  const streakPoints = longestStreak * 0.05;
 
   return roundScore(((commitPoints + streakPoints) / 25) * 100);
+};
+
+export const scoreActivity = (contributionCalendarOrEvents) => {
+  // Detect which format was passed: calendar has a `weeks` array, events is a plain array
+  if (
+    contributionCalendarOrEvents &&
+    !Array.isArray(contributionCalendarOrEvents) &&
+    Array.isArray(contributionCalendarOrEvents.weeks)
+  ) {
+    return scoreActivityFromCalendar(contributionCalendarOrEvents);
+  }
+
+  // Fallback to legacy event-based scoring
+  const events = Array.isArray(contributionCalendarOrEvents)
+    ? contributionCalendarOrEvents
+    : [];
+  return scoreActivityFromEvents(events);
 };
 
 export const scoreCodeQuality = async (repos = [], owner, githubService) => {
@@ -268,6 +329,7 @@ export const computeScores = async (
     username = user.login,
     starredRepos = [],
     pinnedRepos = [],
+    contributionCalendar = null,
   } = options;
 
   const userWithPinnedRepos = {
@@ -275,7 +337,9 @@ export const computeScores = async (
     pinnedRepos,
   };
 
-  const activity = scoreActivity(events);
+  // Prefer the rich GraphQL calendar; fall back to REST events if unavailable
+  const activityInput = contributionCalendar || events;
+  const activity = scoreActivity(activityInput);
   const codeQuality = await scoreCodeQuality(repos, username, githubService);
   const diversity = scoreDiversity(repos);
   const community = scoreCommunity(userWithPinnedRepos, repos, starredRepos);

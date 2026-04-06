@@ -80,6 +80,7 @@ test("buildReportFromGitHub returns normalized report payload", async () => {
     getEvents: async () => [],
     getStarred: async () => [{ full_name: "someone/project" }],
     getPinnedRepos: async () => [{ name: "portfolio", url: "https://repo/p" }],
+    getContributionCalendar: async () => null,
     getRepoContents: async () => [],
   };
 

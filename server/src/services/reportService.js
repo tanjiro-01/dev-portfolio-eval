@@ -5,7 +5,21 @@ import { getGitHubService } from "./githubService.js";
 import { computeScores } from "./scoringService.js";
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-const toHeatmapData = (events = []) => {
+
+// Build heatmap data from the full-year GraphQL contribution calendar.
+// Falls back to REST events if the calendar is unavailable.
+const toHeatmapData = (contributionCalendar, events = []) => {
+  if (contributionCalendar?.weeks) {
+    // Full year from GraphQL — exactly what GitHub's profile renders
+    return contributionCalendar.weeks.flatMap((week) =>
+      week.contributionDays.map((day) => ({
+        date: day.date,
+        count: day.contributionCount,
+      })),
+    );
+  }
+
+  // Legacy fallback: build 84-day heatmap from REST events
   const pushEvents = events.filter((event) => event.type === "PushEvent");
   const countByDate = pushEvents.reduce((acc, event) => {
     const key = new Date(event.created_at).toISOString().slice(0, 10);
@@ -21,11 +35,7 @@ const toHeatmapData = (events = []) => {
     const date = new Date(start);
     date.setDate(start.getDate() + index);
     const dateKey = date.toISOString().slice(0, 10);
-
-    return {
-      date: dateKey,
-      count: countByDate[dateKey] || 0,
-    };
+    return { date: dateKey, count: countByDate[dateKey] || 0 };
   });
 };
 
@@ -73,19 +83,27 @@ export const buildReportFromGitHub = async (
   username,
   githubService = getGitHubService(),
 ) => {
-  const [user, repos, events, starredRepos, pinnedRepos] = await Promise.all([
-    githubService.getUser(username),
-    githubService.getRepos(username),
-    githubService.getEvents(username),
-    githubService.getStarred(username),
-    githubService.getPinnedRepos(username),
-  ]);
+  const getContributionCalendar =
+    typeof githubService.getContributionCalendar === "function"
+      ? githubService.getContributionCalendar(username)
+      : Promise.resolve(null);
+
+  const [user, repos, events, starredRepos, pinnedRepos, contributionCalendar] =
+    await Promise.all([
+      githubService.getUser(username),
+      githubService.getRepos(username),
+      githubService.getEvents(username),
+      githubService.getStarred(username),
+      githubService.getPinnedRepos(username),
+      getContributionCalendar,
+    ]);
 
   const scores = await computeScores(user, repos, events, {
     githubService,
     username,
     starredRepos,
     pinnedRepos,
+    contributionCalendar,
   });
 
   return {
@@ -100,7 +118,7 @@ export const buildReportFromGitHub = async (
     scores,
     topRepos: toTopRepos(repos),
     languages: toLanguages(repos),
-    heatmapData: toHeatmapData(events),
+    heatmapData: toHeatmapData(contributionCalendar, events),
     shareUrl: `/report/${username}`,
   };
 };

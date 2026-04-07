@@ -1,1 +1,1 @@
-export const CURRENT_REPORT_VERSION = 2;
+export const CURRENT_REPORT_VERSION = 3;

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 import Report from "../models/Report.js";
+import { CURRENT_REPORT_VERSION } from "../config/reportCache.js";
 
 const checkCache = async (req, res, next) => {
   try {
@@ -15,6 +16,10 @@ const checkCache = async (req, res, next) => {
 
     const cached = await Report.findOne({ username }).lean();
     if (!cached) {
+      return next();
+    }
+
+    if (cached.report?.reportVersion !== CURRENT_REPORT_VERSION) {
       return next();
     }
 

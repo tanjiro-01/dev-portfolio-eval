@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 import Report from "../models/Report.js";
+import { CURRENT_REPORT_VERSION } from "../config/reportCache.js";
 import { getGitHubService } from "./githubService.js";
 import { computeScores } from "./scoringService.js";
 
@@ -107,6 +108,7 @@ export const buildReportFromGitHub = async (
   });
 
   return {
+    reportVersion: CURRENT_REPORT_VERSION,
     username,
     avatarUrl: user.avatar_url,
     name: user.name,
@@ -152,7 +154,16 @@ export const getCachedReport = async (username) => {
     return null;
   }
 
-  return Report.findOne({ username }).lean();
+  const cached = await Report.findOne({ username }).lean();
+  if (!cached) {
+    return null;
+  }
+
+  if (cached.report?.reportVersion !== CURRENT_REPORT_VERSION) {
+    return null;
+  }
+
+  return cached;
 };
 
 export const getOrBuildReport = async (username) => {

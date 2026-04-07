@@ -1,0 +1,1 @@
+export const CURRENT_REPORT_VERSION = 2;

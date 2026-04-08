@@ -9,9 +9,28 @@ import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
 
+const normalizeOrigin = (origin = "") => origin.replace(/\/$/, "");
+
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map((origin) => normalizeOrigin(origin.trim()))
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: (origin, callback) => {
+      // Allow server-to-server and curl requests with no Origin header.
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const normalizedRequestOrigin = normalizeOrigin(origin);
+      if (allowedOrigins.includes(normalizedRequestOrigin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
   }),
 );
 app.use(express.json());

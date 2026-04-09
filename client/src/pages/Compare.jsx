@@ -11,10 +11,15 @@ import {
   Tooltip,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
-import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from "react-resizable-panels";
+import {
+  Panel,
+  Group as PanelGroup,
+  Separator as PanelResizeHandle,
+} from "react-resizable-panels";
 
 import { fetchProfileReport } from "../api/http.js";
 import ReportLayout from "../components/ReportLayout.jsx";
+import TopNav from "../components/TopNav.jsx";
 
 ChartJS.register(
   RadialLinearScale,
@@ -37,8 +42,8 @@ const scoreRows = [
 const PRESET_STORAGE_KEY = "compare-presets-v1";
 
 const radarColors = [
-  ["#8b5cf6", "rgba(139, 92, 246, 0.2)"],
-  ["#ec4899", "rgba(236, 72, 153, 0.2)"],
+  ["#06b6d4", "rgba(6, 182, 212, 0.2)"],
+  ["#22c55e", "rgba(34, 197, 94, 0.2)"],
   ["#14b8a6", "rgba(20, 184, 166, 0.2)"],
   ["#3b82f6", "rgba(59, 130, 246, 0.2)"],
   ["#f59e0b", "rgba(245, 158, 11, 0.2)"],
@@ -87,11 +92,11 @@ const Compare = () => {
   const [error, setError] = useState("");
   const [reports, setReports] = useState([]);
   const [failedUsers, setFailedUsers] = useState([]);
-  
+
   // Toggles for compare views
   const [sortByCategory, setSortByCategory] = useState(true);
   const [showOnlyScores, setShowOnlyScores] = useState(false); // Default to false to show the dynamic resizable windows
-  
+
   const [presetName, setPresetName] = useState("");
   const [presets, setPresets] = useState([]);
 
@@ -304,26 +309,34 @@ const Compare = () => {
       </Helmet>
 
       <main className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 py-10 flex flex-col gap-8 min-h-screen relative">
+        <TopNav />
         <header className="flex flex-col xl:flex-row gap-8 xl:items-start justify-between">
           <div className="flex-1 max-w-2xl">
-            <p className="text-xs uppercase tracking-widest text-indigo-500 font-bold mb-2">Compare Mode</p>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 mb-3 tracking-tight">Compare multiple GitHub profiles</h1>
-            <p className="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed">
-              Add any number of usernames, dynamically resize their windows, and compare all
-              score categories side by side.
+            <p className="text-xs uppercase tracking-widest text-cyan-500 font-bold mb-2">
+              Compare Mode
             </p>
-            
-            <form className="flex flex-col sm:flex-row gap-3 mb-4" onSubmit={handleAddUser}>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 mb-3 tracking-tight">
+              Compare multiple GitHub profiles
+            </h1>
+            <p className="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed">
+              Add any number of usernames, dynamically resize their windows, and
+              compare all score categories side by side.
+            </p>
+
+            <form
+              className="flex flex-col sm:flex-row gap-3 mb-4"
+              onSubmit={handleAddUser}
+            >
               <input
-                className="bg-slate-900 border border-slate-700 text-slate-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1 min-w-[200px]"
+                className="bg-slate-900 border border-slate-700 text-slate-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 flex-1 min-w-[200px]"
                 value={inputUser}
                 placeholder="Add GitHub username..."
                 onChange={(event) => setInputUser(event.target.value)}
                 disabled={loading}
               />
-              <button 
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl px-6 py-3 font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/20"
-                type="submit" 
+              <button
+                className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white rounded-xl px-6 py-3 font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/20"
+                type="submit"
                 disabled={loading}
               >
                 {loading ? "Loading..." : "Add User"}
@@ -333,11 +346,11 @@ const Compare = () => {
               <label className="flex items-center gap-2 cursor-pointer text-slate-300 font-medium hover:text-white transition-colors">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 rounded text-indigo-500 bg-slate-800 border-slate-600 focus:ring-indigo-500/50 cursor-pointer"
+                  className="w-4 h-4 rounded text-cyan-500 bg-slate-800 border-slate-600 focus:ring-cyan-500/50 cursor-pointer"
                   checked={showOnlyScores}
                   onChange={(e) => setShowOnlyScores(e.target.checked)}
                 />
-                Show only scores 
+                Show only scores
               </label>
               <span className="opacity-50">|</span>
               Drag cards to reorder panes
@@ -345,10 +358,12 @@ const Compare = () => {
           </div>
 
           <section className="flex-shrink-0 w-full xl:w-[450px] bg-slate-900/40 border border-slate-800 rounded-2xl p-5">
-            <h2 className="text-slate-200 font-semibold mb-3 text-sm tracking-wide uppercase">Saved Compare Presets</h2>
+            <h2 className="text-slate-200 font-semibold mb-3 text-sm tracking-wide uppercase">
+              Saved Compare Presets
+            </h2>
             <div className="flex gap-2 mb-4">
               <input
-                className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 flex-1"
+                className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-500 flex-1"
                 placeholder="Preset name"
                 value={presetName}
                 onChange={(event) => setPresetName(event.target.value)}
@@ -363,18 +378,37 @@ const Compare = () => {
               </button>
             </div>
             {!presets.length ? (
-              <p className="text-slate-500 text-sm italic">No presets saved yet.</p>
+              <p className="text-slate-500 text-sm italic">
+                No presets saved yet.
+              </p>
             ) : (
               <div className="flex flex-col gap-2 max-h-[140px] overflow-y-auto pr-1 custom-scrollbar">
                 {presets.map((preset) => (
-                  <article key={preset.id} className="bg-slate-800/60 border border-slate-700/50 rounded-lg p-3 flex justify-between items-center group">
+                  <article
+                    key={preset.id}
+                    className="bg-slate-800/60 border border-slate-700/50 rounded-lg p-3 flex justify-between items-center group"
+                  >
                     <div className="min-w-0 pr-3">
-                      <strong className="block text-slate-200 text-sm truncate">{preset.name}</strong>
-                      <p className="text-slate-500 text-xs truncate">{preset.users.join(", ")}</p>
+                      <strong className="block text-slate-200 text-sm truncate">
+                        {preset.name}
+                      </strong>
+                      <p className="text-slate-500 text-xs truncate">
+                        {preset.users.join(", ")}
+                      </p>
                     </div>
                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="text-xs font-semibold text-indigo-400 hover:text-indigo-300" onClick={() => syncUsersToUrl(preset.users)}>Load</button>
-                      <button className="text-xs font-semibold text-rose-400 hover:text-rose-300" onClick={() => deletePreset(preset.id)}>Del</button>
+                      <button
+                        className="text-xs font-semibold text-cyan-400 hover:text-cyan-300"
+                        onClick={() => syncUsersToUrl(preset.users)}
+                      >
+                        Load
+                      </button>
+                      <button
+                        className="text-xs font-semibold text-rose-400 hover:text-rose-300"
+                        onClick={() => deletePreset(preset.id)}
+                      >
+                        Del
+                      </button>
                     </div>
                   </article>
                 ))}
@@ -385,13 +419,13 @@ const Compare = () => {
 
         {error && (
           <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 p-4 rounded-xl">
-             {error}
+            {error}
           </div>
         )}
 
         {!!failedUsers.length && (
           <div className="bg-amber-500/10 border border-amber-500/30 text-amber-400 p-4 rounded-xl">
-             Could not load: {failedUsers.join(", ")}
+            Could not load: {failedUsers.join(", ")}
           </div>
         )}
 
@@ -407,7 +441,9 @@ const Compare = () => {
                 onDrop={() => handleDrop(index)}
               >
                 <div>
-                  <strong className="text-slate-200 text-sm font-semibold">{username}</strong>
+                  <strong className="text-slate-200 text-sm font-semibold">
+                    {username}
+                  </strong>
                 </div>
                 <button
                   className="w-6 h-6 rounded-full bg-slate-700/50 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors"
@@ -425,114 +461,153 @@ const Compare = () => {
         {!error && loading && reports.length === 0 && (
           <div className="flex-1 flex items-center justify-center min-h-[400px]">
             <div className="animate-pulse flex flex-col items-center">
-              <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
-              <p className="text-indigo-400 mt-4 font-medium tracking-wide">Loading comparison...</p>
+              <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
+              <p className="text-cyan-400 mt-4 font-medium tracking-wide">
+                Loading comparison...
+              </p>
             </div>
           </div>
         )}
 
         {!error && reports.length >= 2 && (
           <div className="flex-1 flex flex-col gap-8 outline-none mt-4">
-            
             {!showOnlyScores ? (
-               // Dynamic Resizable Windows (Leetcode style)
-               <div className="h-[auto] w-full border border-slate-800/80 rounded-3xl bg-slate-900/20 p-2 sm:p-4 shadow-2xl relative">
-                  <PanelGroup direction="horizontal" className="min-h-[800px] w-full rounded-2xl overflow-hidden">
-                    {reports.map((report, index) => (
-                      <React.Fragment key={report.username}>
-                        {index > 0 && <ResizeHandle />}
-                        <Panel minSize={20} defaultSize={100 / reports.length}>
-                          <div className="h-full w-full bg-slate-950/60 overflow-y-auto overflow-x-hidden relative custom-scrollbar px-2 pb-8 rounded-xl border border-slate-800/50">
-                            {/* Panel header acting as dragger hint */}
-                            <div className="sticky top-0 z-50 pt-4 pb-2 bg-slate-950/90 backdrop-blur-md mb-2 flex justify-between items-center border-b border-slate-800/60">
-                               <h3 className="font-bold text-slate-200 flex items-center gap-2">
-                                  <img src={report.avatarUrl} className="w-6 h-6 rounded-full" alt="avatar" />
-                                  {report.username}
-                               </h3>
-                               <span className="text-[10px] uppercase text-slate-500 tracking-widest font-semibold bg-slate-800 px-2 py-0.5 rounded">Profile View</span>
-                            </div>
-                            <ReportLayout report={report} />
+              // Dynamic Resizable Windows (Leetcode style)
+              <div className="h-[auto] w-full border border-slate-800/80 rounded-3xl bg-slate-900/20 p-2 sm:p-4 shadow-2xl relative">
+                <PanelGroup
+                  direction="horizontal"
+                  className="min-h-[800px] w-full rounded-2xl overflow-hidden"
+                >
+                  {reports.map((report, index) => (
+                    <React.Fragment key={report.username}>
+                      {index > 0 && <ResizeHandle />}
+                      <Panel minSize={20} defaultSize={100 / reports.length}>
+                        <div className="h-full w-full bg-slate-950/60 overflow-y-auto overflow-x-hidden relative custom-scrollbar px-2 pb-8 rounded-xl border border-slate-800/50">
+                          {/* Panel header acting as dragger hint */}
+                          <div className="sticky top-0 z-50 pt-4 pb-2 bg-slate-950/90 backdrop-blur-md mb-2 flex justify-between items-center border-b border-slate-800/60">
+                            <h3 className="font-bold text-slate-200 flex items-center gap-2">
+                              <img
+                                src={report.avatarUrl}
+                                className="w-6 h-6 rounded-full"
+                                alt="avatar"
+                              />
+                              {report.username}
+                            </h3>
+                            <span className="text-[10px] uppercase text-slate-500 tracking-widest font-semibold bg-slate-800 px-2 py-0.5 rounded">
+                              Profile View
+                            </span>
                           </div>
-                        </Panel>
-                      </React.Fragment>
-                    ))}
-                  </PanelGroup>
-               </div>
+                          <ReportLayout report={report} />
+                        </div>
+                      </Panel>
+                    </React.Fragment>
+                  ))}
+                </PanelGroup>
+              </div>
             ) : (
-               // Matrix and Radar View (Show Only Scores)
-               <div className="grid xl:grid-cols-2 gap-8">
-                  <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col">
-                    <h2 className="text-xl font-bold text-slate-200 mb-2 flex items-center gap-2">
-                       <span className="w-2 h-6 bg-purple-500 rounded-full inline-block"></span>
-                       Multi-User Radar Overlay
+              // Matrix and Radar View (Show Only Scores)
+              <div className="grid xl:grid-cols-2 gap-8">
+                <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col">
+                  <h2 className="text-xl font-bold text-slate-200 mb-2 flex items-center gap-2">
+                    <span className="w-2 h-6 bg-cyan-500 rounded-full inline-block"></span>
+                    Multi-User Radar Overlay
+                  </h2>
+                  <p className="text-slate-400 text-sm mb-6">
+                    Visually scan for strongest profile across all vectors.
+                  </p>
+                  <div className="flex-1 min-h-[400px] relative">
+                    <Radar data={radarData} options={radarOptions} />
+                  </div>
+                </section>
+
+                <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <h2 className="text-xl font-bold text-slate-200 flex items-center gap-2">
+                      <span className="w-2 h-6 bg-emerald-500 rounded-full inline-block"></span>
+                      Comparison Matrix
                     </h2>
-                    <p className="text-slate-400 text-sm mb-6">
-                      Visually scan for strongest profile across all vectors.
-                    </p>
-                    <div className="flex-1 min-h-[400px] relative">
-                      <Radar data={radarData} options={radarOptions} />
-                    </div>
-                  </section>
+                    <label className="flex items-center gap-2 text-sm text-slate-300 font-medium cursor-pointer hover:text-white transition-colors">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 rounded text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500/50"
+                        checked={sortByCategory}
+                        onChange={(event) =>
+                          setSortByCategory(event.target.checked)
+                        }
+                      />
+                      Target-sorted rows
+                    </label>
+                  </div>
 
-                  <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                      <h2 className="text-xl font-bold text-slate-200 flex items-center gap-2">
-                        <span className="w-2 h-6 bg-emerald-500 rounded-full inline-block"></span>
-                        Comparison Matrix
-                      </h2>
-                      <label className="flex items-center gap-2 text-sm text-slate-300 font-medium cursor-pointer hover:text-white transition-colors">
-                        <input
-                          type="checkbox"
-                          className="w-4 h-4 rounded text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500/50"
-                          checked={sortByCategory}
-                          onChange={(event) => setSortByCategory(event.target.checked)}
-                        />
-                        Target-sorted rows
-                      </label>
-                    </div>
+                  <div className="flex flex-col gap-3 flex-1 overflow-x-auto">
+                    {scoreRows.map(([label, key]) => {
+                      const winners = categoryWinners[key] || [];
+                      const winnerText =
+                        winners.length > 1
+                          ? winners.join(", ")
+                          : winners[0] || "n/a";
 
-                    <div className="flex flex-col gap-3 flex-1 overflow-x-auto">
-                      {scoreRows.map(([label, key]) => {
-                        const winners = categoryWinners[key] || [];
-                        const winnerText = winners.length > 1 ? winners.join(", ") : winners[0] || "n/a";
+                      const rowReports = sortByCategory
+                        ? [...reports].sort(
+                            (a, b) =>
+                              (b.scores?.[key] ?? 0) - (a.scores?.[key] ?? 0),
+                          )
+                        : reports;
 
-                        const rowReports = sortByCategory
-                          ? [...reports].sort((a, b) => (b.scores?.[key] ?? 0) - (a.scores?.[key] ?? 0))
-                          : reports;
+                      return (
+                        <article
+                          key={key}
+                          className="flex flex-col xl:flex-row gap-4 items-center bg-slate-800/40 hover:bg-slate-800/80 transition-colors border border-slate-700/50 rounded-2xl p-4"
+                        >
+                          <span className="text-slate-300 font-bold w-full xl:w-32 flex-shrink-0 text-sm xl:text-base uppercase tracking-wider">
+                            {label}
+                          </span>
+                          <div className="flex-1 flex flex-wrap gap-2 w-full">
+                            {rowReports.map((report) => {
+                              const score = report.scores?.[key] ?? 0;
+                              const isWinner = winners.includes(
+                                report.username,
+                              );
 
-                        return (
-                          <article key={key} className="flex flex-col xl:flex-row gap-4 items-center bg-slate-800/40 hover:bg-slate-800/80 transition-colors border border-slate-700/50 rounded-2xl p-4">
-                            <span className="text-slate-300 font-bold w-full xl:w-32 flex-shrink-0 text-sm xl:text-base uppercase tracking-wider">{label}</span>
-                            <div className="flex-1 flex flex-wrap gap-2 w-full">
-                              {rowReports.map((report) => {
-                                const score = report.scores?.[key] ?? 0;
-                                const isWinner = winners.includes(report.username);
-
-                                return (
-                                  <div
-                                    key={`${key}-${report.username}`}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-700/50 text-sm font-medium transition-all ${
-                                      isWinner 
-                                        ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.1)]" 
-                                        : "bg-slate-800 text-slate-400"
-                                    }`}
+                              return (
+                                <div
+                                  key={`${key}-${report.username}`}
+                                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-700/50 text-sm font-medium transition-all ${
+                                    isWinner
+                                      ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.1)]"
+                                      : "bg-slate-800 text-slate-400"
+                                  }`}
+                                >
+                                  <span className="opacity-80">
+                                    {report.username}
+                                  </span>
+                                  <strong
+                                    className={
+                                      isWinner
+                                        ? "text-emerald-400"
+                                        : "text-slate-200"
+                                    }
                                   >
-                                    <span className="opacity-80">{report.username}</span>
-                                    <strong className={isWinner ? "text-emerald-400" : "text-slate-200"}>{score}</strong>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            <div className="w-full xl:w-32 flex-shrink-0 text-left xl:text-right">
-                               <span className="text-xs text-slate-500 uppercase font-semibold">Winner</span>
-                               <p className="text-indigo-400 font-bold text-sm truncate">{winnerText}</p>
-                            </div>
-                          </article>
-                        );
-                      })}
-                    </div>
-                  </section>
-               </div>
+                                    {score}
+                                  </strong>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          <div className="w-full xl:w-32 flex-shrink-0 text-left xl:text-right">
+                            <span className="text-xs text-slate-500 uppercase font-semibold">
+                              Winner
+                            </span>
+                            <p className="text-cyan-400 font-bold text-sm truncate">
+                              {winnerText}
+                            </p>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </section>
+              </div>
             )}
           </div>
         )}

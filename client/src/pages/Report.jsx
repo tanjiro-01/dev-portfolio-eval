@@ -6,6 +6,7 @@ import { fetchProfileReport } from "../api/http.js";
 import SearchForm from "../components/SearchForm.jsx";
 import ReportSkeleton from "../components/ReportSkeleton.jsx";
 import ReportLayout from "../components/ReportLayout.jsx";
+import TopNav from "../components/TopNav.jsx";
 
 const Report = () => {
   const { username = "" } = useParams();
@@ -109,11 +110,16 @@ const Report = () => {
       </Helmet>
 
       <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col gap-8 min-h-screen">
+        <TopNav />
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-800">
           <div>
-            <p className="text-xs uppercase tracking-widest text-blue-500 font-bold mb-2">Report</p>
+            <p className="text-xs uppercase tracking-widest text-blue-500 font-bold mb-2">
+              Report
+            </p>
             <div className="flex flex-wrap items-center gap-4">
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-100">{normalizedUsername || "Unknown User"}</h1>
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-100">
+                {normalizedUsername || "Unknown User"}
+              </h1>
               <button
                 onClick={handleCopyLink}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all border ${
@@ -139,14 +145,24 @@ const Report = () => {
         {loading && <ReportSkeleton />}
         {!loading && error && (
           <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 p-4 rounded-xl flex items-center gap-3">
-             <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-             <p>{error}</p>
+            <svg
+              className="w-5 h-5 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <p>{error}</p>
           </div>
         )}
 
-        {!loading && !error && report && (
-          <ReportLayout report={report} />
-        )}
+        {!loading && !error && report && <ReportLayout report={report} />}
       </main>
     </>
   );

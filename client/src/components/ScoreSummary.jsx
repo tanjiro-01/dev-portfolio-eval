@@ -43,10 +43,12 @@ const CircularProgress = ({ score, max = 100 }) => {
         </defs>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-400">
+        <div className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">
           {score}
         </div>
-        <div className="text-xs text-slate-500 uppercase tracking-widest mt-1">out of 100</div>
+        <div className="text-xs text-slate-500 uppercase tracking-widest mt-1">
+          out of 100
+        </div>
       </div>
     </div>
   );
@@ -55,7 +57,7 @@ const CircularProgress = ({ score, max = 100 }) => {
 const ScoreSummary = ({ scores }) => {
   return (
     <section className="@container bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
-      <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/10 to-violet-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+      <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
       <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 relative z-10 text-slate-200">
         <span className="w-2 h-6 bg-blue-500 rounded-full inline-block"></span>
         Score Summary
@@ -65,9 +67,16 @@ const ScoreSummary = ({ scores }) => {
       </div>
       <div className="grid grid-cols-2 @md:grid-cols-3 gap-3 relative z-10">
         {scoreItems.map(([label, key]) => (
-          <article key={key} className="flex flex-col @sm:flex-row justify-between @sm:items-center bg-slate-800/40 hover:bg-slate-800/80 transition-colors border border-slate-700/50 rounded-xl p-3 shadow-inner">
-            <span className="text-sm text-slate-400 mb-1 @sm:mb-0">{label}</span>
-            <strong className="text-lg font-mono text-slate-200">{scores[key]}</strong>
+          <article
+            key={key}
+            className="flex flex-col @sm:flex-row justify-between @sm:items-center bg-slate-800/40 hover:bg-slate-800/80 transition-colors border border-slate-700/50 rounded-xl p-3 shadow-inner"
+          >
+            <span className="text-sm text-slate-400 mb-1 @sm:mb-0">
+              {label}
+            </span>
+            <strong className="text-lg font-mono text-slate-200">
+              {scores[key]}
+            </strong>
           </article>
         ))}
       </div>

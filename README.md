@@ -1,107 +1,128 @@
 # Developer Portfolio Evaluator
 
-Full-stack MERN application that evaluates any public GitHub profile and produces a scoring report across activity, code quality, diversity, community impact, and hiring readiness.
+Developer Portfolio Evaluator is a full-stack MERN web app that analyzes any public GitHub profile and generates a shareable score report.
 
-## Live Demo
+## Live URLs
 
-- Frontend (Vercel): `ADD_YOUR_VERCEL_URL_HERE`
-- Backend (Render): `ADD_YOUR_RENDER_URL_HERE`
+- Frontend (Vercel): https://dev-portfolio-evaluator.vercel.app
+- Backend (Render): https://dev-portfolio-evaluator-api.onrender.com
+
+## What This Project Does
+
+1. User enters a GitHub username.
+2. Backend fetches profile, repositories, starred repos, pinned repos, events, and contribution calendar.
+3. Scoring engine computes 5 categories and weighted overall score.
+4. Frontend renders a report page with charts and cards.
+5. Report URL can be shared directly (`/report/:username`).
+6. Results are cached in MongoDB for 24 hours to reduce repeated API calls.
+
+## Scoring Model (How Calculation Works)
+
+### Category Weights
+
+- Activity: 25%
+- Code Quality: 20%
+- Diversity: 20%
+- Community: 20%
+- Hiring Ready: 15%
+
+### Activity (25%)
+
+- Primary source: GraphQL contribution calendar (52 weeks, 365 days).
+- Fallback source: REST events when GraphQL calendar unavailable.
+- Components:
+  - Contribution volume in last 90 days
+  - Active days consistency
+  - Longest streak
+
+### Code Quality (20%)
+
+- Evaluated from top repositories with checks such as:
+  - License present
+  - Topics present
+  - Description/homepage present
+  - Non-fork signal
+  - README detection
+  - tests/test folder detection
+
+### Diversity (20%)
+
+- Unique language coverage
+- Category bucketing from language/topic signals (web, backend, data, cli, etc.)
+
+### Community (20%)
+
+- Stars and forks from owned repositories (fork inflation removed)
+- Followers signal
+- Small starred-repos engagement signal
+
+### Hiring Ready (15%)
+
+- Bio present
+- Website present
+- Location/company present
+- Non-fork repos present
+- Pinned repositories present
 
 ## Core Features
 
-- GitHub username search with graceful error handling
-- Scorecard with 5 categories and weighted overall score
-- Circular progress ring, radar chart, heatmap calendar, and language bar chart
-- Top repositories list with language pills, stars, and forks
-- Shareable report routes at `/report/:username` with OpenGraph tags
-- Compare mode for side-by-side profile analysis
-- MongoDB caching (24-hour TTL)
+- GitHub profile search and report generation
+- Shareable report URLs with OpenGraph metadata
+- Compare mode with multi-user visual comparison
+- Circular score summary, radar chart, language chart, contribution calendar
+- Modern responsive UI with navigation between Home, Report, and Compare
 
 ## Tech Stack
 
-| Layer      | Technology                                    |
-| ---------- | --------------------------------------------- |
-| Frontend   | React 18, Vite, React Router, Chart.js, Axios |
-| Backend    | Node.js, Express, Octokit, dotenv, node-cron  |
-| Database   | MongoDB Atlas, Mongoose                       |
-| Deployment | Vercel (frontend), Render (backend)           |
-
-## Project Structure
-
-```text
-dev-portfolio-evaluator/
-	client/    # React + Vite frontend
-	server/    # Express API + scoring engine
-	docs/      # planning, gap analysis, implementation notes
-```
+| Layer    | Technology                                              |
+| -------- | ------------------------------------------------------- |
+| Frontend | React 18, Vite, React Router, Chart.js, Axios, Tailwind |
+| Backend  | Node.js, Express, Octokit, dotenv                       |
+| Database | MongoDB Atlas + Mongoose                                |
+| Hosting  | Vercel (frontend), Render (backend)                     |
 
 ## Environment Variables
 
-### Server (`server/.env`)
+### Backend (`server/.env`)
 
-| Variable       | Required    | Description                                         | Example                 |
-| -------------- | ----------- | --------------------------------------------------- | ----------------------- |
-| `MONGODB_URI`  | Recommended | MongoDB Atlas connection string (cache persistence) | `mongodb+srv://...`     |
-| `GITHUB_TOKEN` | Yes         | GitHub personal access token                        | `ghp_xxx`               |
-| `CLIENT_URL`   | Yes         | Allowed frontend origin for CORS                    | `http://localhost:5173` |
-| `PORT`         | No          | Backend port                                        | `5000`                  |
-| `JWT_SECRET`   | No          | Reserved for optional auth extension                | `any-random-string`     |
+- `GITHUB_TOKEN`
+- `MONGODB_URI`
+- `CLIENT_URL`
+- `PORT` (optional, default 5000)
+- `JWT_SECRET` (optional)
 
-### Client (`client/.env`)
+### Frontend (`client/.env`)
 
-| Variable       | Required | Description          | Example                     |
-| -------------- | -------- | -------------------- | --------------------------- |
-| `VITE_API_URL` | Yes      | Backend API base URL | `http://localhost:5000/api` |
+- `VITE_API_URL` (must include `/api` in deployed setup)
 
-## Local Setup
+Example:
 
-1. Install dependencies
+`VITE_API_URL=https://dev-portfolio-evaluator-api.onrender.com/api`
+
+## Local Development
 
 ```bash
-npm --prefix client install
 npm --prefix server install
-```
-
-2. Create env files
-
-```bash
-copy server/.env.example server/.env
-copy client/.env.example client/.env
-```
-
-3. Run development servers
-
-```bash
+npm --prefix client install
 npm --prefix server run dev
 npm --prefix client run dev
 ```
 
 ## API Endpoints
 
-| Method | Endpoint                        | Description                           |
-| ------ | ------------------------------- | ------------------------------------- |
-| `GET`  | `/api/profile/:username`        | Build or return cached profile report |
-| `GET`  | `/api/profile/:username/cached` | Return cached report only             |
-| `GET`  | `/api/compare?u1=:u1&u2=:u2`    | Compare two GitHub users              |
-| `GET`  | `/api/health`                   | Server and DB health check            |
+- `GET /api/health`
+- `GET /api/profile/:username`
+- `GET /api/profile/:username/cached`
+- `GET /api/compare?u1=:u1&u2=:u2`
 
-## Deployment
+## Deployment Notes
 
-### Frontend (Vercel)
+- Vercel rewrite is configured for SPA deep-link refresh support.
+- CORS is normalized for trailing-slash origin differences.
+- Cache versioning is used to invalidate stale reports after scoring changes.
 
-1. Import repository into Vercel
-2. Set `VITE_API_URL` to your Render backend URL + `/api`
-3. Deploy and copy live URL into the "Live Demo" section above
+## Project Journey
 
-### Backend (Render)
+For a concise start-to-end implementation summary, see:
 
-1. Create Web Service from this repository
-2. Set environment variables: `GITHUB_TOKEN`, `CLIENT_URL`, `MONGODB_URI`, `PORT`
-3. Deploy and copy live URL into the "Live Demo" section above
-
-## Validation Commands
-
-```bash
-npm --prefix server run test:unit
-npm --prefix client run build
-```
+- docs/project-journey.md

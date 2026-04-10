@@ -42,13 +42,13 @@ const scoreRows = [
 const PRESET_STORAGE_KEY = "compare-presets-v1";
 
 const radarColors = [
-  ["#06b6d4", "rgba(6, 182, 212, 0.2)"],
-  ["#22c55e", "rgba(34, 197, 94, 0.2)"],
-  ["#14b8a6", "rgba(20, 184, 166, 0.2)"],
-  ["#3b82f6", "rgba(59, 130, 246, 0.2)"],
-  ["#f59e0b", "rgba(245, 158, 11, 0.2)"],
-  ["#10b981", "rgba(16, 185, 129, 0.2)"],
-  ["#ef4444", "rgba(239, 68, 68, 0.2)"],
+  ["#b08968", "rgba(176, 137, 104, 0.2)"],
+  ["#7f5539", "rgba(127, 85, 57, 0.2)"],
+  ["#a68a64", "rgba(166, 138, 100, 0.2)"],
+  ["#6b7280", "rgba(107, 114, 128, 0.2)"],
+  ["#9c6644", "rgba(156, 102, 68, 0.2)"],
+  ["#8d6e63", "rgba(141, 110, 99, 0.2)"],
+  ["#a3a380", "rgba(163, 163, 128, 0.2)"],
 ];
 
 const parseUsersFromParams = (searchParams) => {
@@ -72,7 +72,7 @@ const reorder = (items, from, to) => {
 // Custom elegant resize handle for resizable panels
 const ResizeHandle = () => (
   <PanelResizeHandle className="w-4 flex flex-col justify-center items-center group cursor-col-resize outline-none z-20">
-    <div className="w-1 h-12 bg-slate-700/50 rounded-full group-hover:bg-blue-500 group-active:bg-blue-400 group-hover:shadow-[0_0_8px_rgba(59,130,246,0.6)] transition-all duration-200" />
+    <div className="w-1 h-12 bg-slate-700/50 rounded-full group-hover:bg-amber-500 group-active:bg-amber-400 group-hover:shadow-[0_0_8px_rgba(245,158,11,0.6)] transition-all duration-200" />
   </PanelResizeHandle>
 );
 
@@ -312,7 +312,7 @@ const Compare = () => {
         <TopNav />
         <header className="flex flex-col xl:flex-row gap-8 xl:items-start justify-between">
           <div className="flex-1 max-w-2xl">
-            <p className="text-xs uppercase tracking-widest text-cyan-500 font-bold mb-2">
+            <p className="text-xs uppercase tracking-widest text-amber-400 font-bold mb-2">
               Compare Mode
             </p>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 mb-3 tracking-tight">
@@ -328,14 +328,14 @@ const Compare = () => {
               onSubmit={handleAddUser}
             >
               <input
-                className="bg-slate-900 border border-slate-700 text-slate-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 flex-1 min-w-[200px]"
+                className="bg-slate-900 border border-slate-700 text-slate-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 flex-1 min-w-[200px]"
                 value={inputUser}
                 placeholder="Add GitHub username..."
                 onChange={(event) => setInputUser(event.target.value)}
                 disabled={loading}
               />
               <button
-                className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white rounded-xl px-6 py-3 font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/20"
+                className="bg-gradient-to-r from-stone-700 to-zinc-600 hover:from-stone-600 hover:to-zinc-500 text-amber-100 rounded-xl px-6 py-3 font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-black/25 border border-stone-500/60"
                 type="submit"
                 disabled={loading}
               >
@@ -346,7 +346,7 @@ const Compare = () => {
               <label className="flex items-center gap-2 cursor-pointer text-slate-300 font-medium hover:text-white transition-colors">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 rounded text-cyan-500 bg-slate-800 border-slate-600 focus:ring-cyan-500/50 cursor-pointer"
+                  className="w-4 h-4 rounded text-amber-500 bg-slate-800 border-slate-600 focus:ring-amber-500/50 cursor-pointer"
                   checked={showOnlyScores}
                   onChange={(e) => setShowOnlyScores(e.target.checked)}
                 />
@@ -363,7 +363,7 @@ const Compare = () => {
             </h2>
             <div className="flex gap-2 mb-4">
               <input
-                className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-500 flex-1"
+                className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 flex-1"
                 placeholder="Preset name"
                 value={presetName}
                 onChange={(event) => setPresetName(event.target.value)}
@@ -398,7 +398,7 @@ const Compare = () => {
                     </div>
                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
-                        className="text-xs font-semibold text-cyan-400 hover:text-cyan-300"
+                        className="text-xs font-semibold text-amber-300 hover:text-amber-200"
                         onClick={() => syncUsersToUrl(preset.users)}
                       >
                         Load
@@ -461,8 +461,8 @@ const Compare = () => {
         {!error && loading && reports.length === 0 && (
           <div className="flex-1 flex items-center justify-center min-h-[400px]">
             <div className="animate-pulse flex flex-col items-center">
-              <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
-              <p className="text-cyan-400 mt-4 font-medium tracking-wide">
+              <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></div>
+              <p className="text-amber-300 mt-4 font-medium tracking-wide">
                 Loading comparison...
               </p>
             </div>
@@ -509,7 +509,7 @@ const Compare = () => {
               <div className="grid xl:grid-cols-2 gap-8">
                 <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col">
                   <h2 className="text-xl font-bold text-slate-200 mb-2 flex items-center gap-2">
-                    <span className="w-2 h-6 bg-cyan-500 rounded-full inline-block"></span>
+                    <span className="w-2 h-6 bg-amber-500 rounded-full inline-block"></span>
                     Multi-User Radar Overlay
                   </h2>
                   <p className="text-slate-400 text-sm mb-6">
@@ -523,13 +523,13 @@ const Compare = () => {
                 <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                     <h2 className="text-xl font-bold text-slate-200 flex items-center gap-2">
-                      <span className="w-2 h-6 bg-emerald-500 rounded-full inline-block"></span>
+                      <span className="w-2 h-6 bg-stone-400 rounded-full inline-block"></span>
                       Comparison Matrix
                     </h2>
                     <label className="flex items-center gap-2 text-sm text-slate-300 font-medium cursor-pointer hover:text-white transition-colors">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 rounded text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500/50"
+                        className="w-4 h-4 rounded text-amber-500 bg-slate-800 border-slate-600 focus:ring-amber-500/50"
                         checked={sortByCategory}
                         onChange={(event) =>
                           setSortByCategory(event.target.checked)
@@ -574,7 +574,7 @@ const Compare = () => {
                                   key={`${key}-${report.username}`}
                                   className={`flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-700/50 text-sm font-medium transition-all ${
                                     isWinner
-                                      ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.1)]"
+                                      ? "bg-amber-500/15 border-amber-500/40 text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.1)]"
                                       : "bg-slate-800 text-slate-400"
                                   }`}
                                 >
@@ -584,7 +584,7 @@ const Compare = () => {
                                   <strong
                                     className={
                                       isWinner
-                                        ? "text-emerald-400"
+                                        ? "text-amber-300"
                                         : "text-slate-200"
                                     }
                                   >
@@ -598,7 +598,7 @@ const Compare = () => {
                             <span className="text-xs text-slate-500 uppercase font-semibold">
                               Winner
                             </span>
-                            <p className="text-cyan-400 font-bold text-sm truncate">
+                            <p className="text-amber-300 font-bold text-sm truncate">
                               {winnerText}
                             </p>
                           </div>

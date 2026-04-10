@@ -9,7 +9,7 @@
 }
 
 body {
-  @apply bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-blue-500/30 selection:text-blue-200;
+  @apply bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-amber-500/30 selection:text-amber-100;
 }
 
 /* Custom scrollbar for dark mode premium feel */

@@ -20,14 +20,14 @@ const SearchForm = ({ defaultValue = "", onSubmit, loading }) => {
       onSubmit={handleSubmit}
     >
       <input
-        className="w-full bg-slate-900 border border-slate-700 text-slate-100 placeholder-slate-500 rounded-xl text-base px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-inner disabled:opacity-50"
+        className="w-full bg-slate-900 border border-slate-700 text-slate-100 placeholder-slate-500 rounded-xl text-base px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all shadow-inner disabled:opacity-50"
         placeholder="Enter GitHub username"
         value={username}
         onChange={(event) => setUsername(event.target.value)}
         disabled={loading}
       />
       <button
-        className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold rounded-xl px-6 py-3 transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-cyan-500/25 disabled:opacity-50 disabled:pointer-events-none border border-cyan-500/50"
+        className="flex items-center justify-center gap-2 bg-gradient-to-r from-stone-700 to-zinc-600 hover:from-stone-600 hover:to-zinc-500 text-amber-100 font-semibold rounded-xl px-6 py-3 transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-black/25 disabled:opacity-50 disabled:pointer-events-none border border-stone-500/60"
         type="submit"
         disabled={loading}
       >

@@ -113,7 +113,7 @@ const Report = () => {
         <TopNav />
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-800">
           <div>
-            <p className="text-xs uppercase tracking-widest text-blue-500 font-bold mb-2">
+            <p className="text-xs uppercase tracking-widest text-amber-400 font-bold mb-2">
               Report
             </p>
             <div className="flex flex-wrap items-center gap-4">
@@ -124,8 +124,8 @@ const Report = () => {
                 onClick={handleCopyLink}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all border ${
                   copied
-                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]"
-                    : "bg-blue-500/10 text-blue-400 border-blue-500/50 hover:bg-blue-500/20"
+                    ? "bg-amber-500/15 text-amber-200 border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]"
+                    : "bg-stone-500/15 text-stone-200 border-stone-500/50 hover:bg-stone-500/25"
                 }`}
                 title="Copy report link to clipboard"
               >

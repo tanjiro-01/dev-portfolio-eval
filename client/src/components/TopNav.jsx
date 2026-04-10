@@ -3,8 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 const navLinkClass = (active) =>
   `px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
     active
-      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40"
-      : "text-slate-300 border border-slate-700 hover:text-cyan-300 hover:border-cyan-500/40"
+      ? "bg-amber-500/15 text-amber-200 border border-amber-400/40"
+      : "text-slate-300 border border-slate-700 hover:text-amber-200 hover:border-amber-500/40"
   }`;
 
 const TopNav = () => {
@@ -25,7 +25,7 @@ const TopNav = () => {
           Compare
         </Link>
         {onReport && (
-          <span className="px-3 py-1.5 rounded-lg text-sm font-semibold text-cyan-200 border border-cyan-500/30 bg-cyan-500/10">
+          <span className="px-3 py-1.5 rounded-lg text-sm font-semibold text-amber-100 border border-amber-500/30 bg-amber-500/10">
             Report
           </span>
         )}
@@ -35,7 +35,7 @@ const TopNav = () => {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="px-3 py-1.5 rounded-lg text-sm font-semibold text-slate-200 border border-slate-700 hover:border-cyan-500/40 hover:text-cyan-300 transition-colors"
+          className="px-3 py-1.5 rounded-lg text-sm font-semibold text-slate-200 border border-slate-700 hover:border-amber-500/40 hover:text-amber-200 transition-colors"
         >
           Back
         </button>

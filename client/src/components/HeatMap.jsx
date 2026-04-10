@@ -1,8 +1,8 @@
 const toneClass = (count) => {
-  if (count >= 8) return "bg-blue-400 border-blue-300/30";
-  if (count >= 5) return "bg-blue-500/80 border-blue-400/30";
-  if (count >= 2) return "bg-blue-700/60 border-blue-600/30";
-  if (count >= 1) return "bg-blue-900/50 border-blue-800/30";
+  if (count >= 8) return "bg-amber-300 border-amber-200/40";
+  if (count >= 5) return "bg-amber-500/80 border-amber-400/40";
+  if (count >= 2) return "bg-stone-600/80 border-stone-500/40";
+  if (count >= 1) return "bg-zinc-700/80 border-zinc-600/40";
   return "bg-slate-800 border-slate-700/50";
 };
 
@@ -17,7 +17,7 @@ const HeatMap = ({ heatmapData = [] }) => {
     return (
       <section className="@container bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl">
         <h2 className="text-xl font-semibold mb-2 flex items-center gap-2 text-slate-200">
-          <span className="w-2 h-6 bg-teal-500 rounded-full inline-block"></span>
+          <span className="w-2 h-6 bg-amber-500 rounded-full inline-block"></span>
           {title}
         </h2>
         <p className="text-slate-400 text-sm">
@@ -66,10 +66,10 @@ const HeatMap = ({ heatmapData = [] }) => {
 
   return (
     <section className="@container bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl relative group overflow-hidden">
-      <div className="absolute -inset-1 bg-gradient-to-r from-teal-500/10 to-emerald-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+      <div className="absolute -inset-1 bg-gradient-to-r from-amber-500/10 to-stone-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
 
       <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 relative z-10 text-slate-200">
-        <span className="w-2 h-6 bg-teal-500 rounded-full inline-block"></span>
+        <span className="w-2 h-6 bg-amber-500 rounded-full inline-block"></span>
         {title}
       </h2>
 
@@ -124,10 +124,10 @@ const HeatMap = ({ heatmapData = [] }) => {
         <span className="text-xs text-slate-500">Less</span>
         <div className="flex gap-1">
           <div className="w-3 h-3 rounded-sm border bg-slate-800 border-slate-700/50"></div>
-          <div className="w-3 h-3 rounded-sm border bg-blue-900/50 border-blue-800/30"></div>
-          <div className="w-3 h-3 rounded-sm border bg-blue-700/60 border-blue-600/30"></div>
-          <div className="w-3 h-3 rounded-sm border bg-blue-500/80 border-blue-400/30"></div>
-          <div className="w-3 h-3 rounded-sm border bg-blue-400 border-blue-300/30"></div>
+          <div className="w-3 h-3 rounded-sm border bg-zinc-700/80 border-zinc-600/40"></div>
+          <div className="w-3 h-3 rounded-sm border bg-stone-600/80 border-stone-500/40"></div>
+          <div className="w-3 h-3 rounded-sm border bg-amber-500/80 border-amber-400/40"></div>
+          <div className="w-3 h-3 rounded-sm border bg-amber-300 border-amber-200/40"></div>
         </div>
         <span className="text-xs text-slate-500">More</span>
       </div>

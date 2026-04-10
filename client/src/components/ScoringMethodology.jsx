@@ -26,7 +26,7 @@ const ScoringMethodology = () => {
   return (
     <section className="@container bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl">
       <h2 className="text-xl font-semibold mb-2 flex items-center gap-2 text-slate-200">
-        <span className="w-2 h-6 bg-cyan-500 rounded-full inline-block"></span>
+        <span className="w-2 h-6 bg-amber-500 rounded-full inline-block"></span>
         How Scoring Works
       </h2>
       <p className="text-sm text-slate-400 mb-6">

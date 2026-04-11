@@ -64,7 +64,7 @@ const Home = () => {
           <p className="text-amber-400 font-bold tracking-widest uppercase text-sm mb-4">
             Developer Portfolio Evaluator
           </p>
-          <h1 className="text-4xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 mb-6 tracking-tight">
+          <h1 className="hero-gradient-title text-4xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 mb-6 tracking-tight">
             Score any GitHub profile in seconds
           </h1>
           <p className="text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">

@@ -1,3 +1,5 @@
+import { useTheme } from "../context/ThemeContext.jsx";
+
 const scoreItems = [
   ["Activity", "activity"],
   ["Code Quality", "codeQuality"],
@@ -6,30 +8,30 @@ const scoreItems = [
   ["Hiring Ready", "hiringReady"],
 ];
 
-const CircularProgress = ({ score, max = 100 }) => {
+const CircularProgress = ({ score, isLight, max = 100 }) => {
   const percentage = (score / max) * 100;
-  const radius = 45;
+  const radius = 56;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="relative w-40 h-40">
-      <svg width="160" height="160" className="-rotate-90">
+    <div className="relative w-48 h-48">
+      <svg width="192" height="192" className="-rotate-90">
         <circle
-          cx="80"
-          cy="80"
+          cx="96"
+          cy="96"
           r={radius}
           fill="none"
           className="stroke-slate-800"
-          strokeWidth="8"
+          strokeWidth="10"
         />
         <circle
-          cx="80"
-          cy="80"
+          cx="96"
+          cy="96"
           r={radius}
           fill="none"
           stroke="url(#elegant-gradient)"
-          strokeWidth="8"
+          strokeWidth="10"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
@@ -43,16 +45,16 @@ const CircularProgress = ({ score, max = 100 }) => {
             x2="100%"
             y2="0%"
           >
-            <stop offset="0%" stopColor="#a47149" />
-            <stop offset="100%" stopColor="#d4b483" />
+            <stop offset="0%" stopColor={isLight ? "#8a6a45" : "#a47149"} />
+            <stop offset="100%" stopColor={isLight ? "#c1945a" : "#d4b483"} />
           </linearGradient>
         </defs>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-200 to-stone-300">
+        <div className="score-ring-value text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-200 to-stone-300 leading-none">
           {score}
         </div>
-        <div className="text-xs text-slate-500 uppercase tracking-widest mt-1">
+        <div className="text-xs text-slate-500 uppercase tracking-[0.18em] mt-2">
           out of 100
         </div>
       </div>
@@ -61,6 +63,8 @@ const CircularProgress = ({ score, max = 100 }) => {
 };
 
 const ScoreSummary = ({ scores }) => {
+  const { isLight } = useTheme();
+
   return (
     <section className="@container bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
       <div className="absolute -inset-1 bg-gradient-to-r from-amber-500/10 to-stone-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
@@ -69,7 +73,7 @@ const ScoreSummary = ({ scores }) => {
         Score Summary
       </h2>
       <div className="flex justify-center mb-8 relative z-10">
-        <CircularProgress score={scores.overall} />
+        <CircularProgress score={scores.overall} isLight={isLight} />
       </div>
       <div className="grid grid-cols-2 @md:grid-cols-3 gap-3 relative z-10">
         {scoreItems.map(([label, key]) => (

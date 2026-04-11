@@ -250,10 +250,14 @@ const Compare = () => {
         max: 100,
         ticks: { stepSize: 20, display: false },
         grid: {
-          color: isLight ? "rgba(71, 85, 105, 0.2)" : "rgba(255, 255, 255, 0.1)",
+          color: isLight
+            ? "rgba(71, 85, 105, 0.2)"
+            : "rgba(255, 255, 255, 0.1)",
         },
         angleLines: {
-          color: isLight ? "rgba(71, 85, 105, 0.2)" : "rgba(255, 255, 255, 0.1)",
+          color: isLight
+            ? "rgba(71, 85, 105, 0.2)"
+            : "rgba(255, 255, 255, 0.1)",
         },
         pointLabels: {
           color: isLight ? "#334155" : "#cbd5e1",
@@ -328,7 +332,7 @@ const Compare = () => {
             <p className="text-xs uppercase tracking-widest text-amber-400 font-bold mb-2">
               Compare Mode
             </p>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 mb-3 tracking-tight">
+            <h1 className="hero-gradient-title text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 mb-3 tracking-tight">
               Compare multiple GitHub profiles
             </h1>
             <p className="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed">

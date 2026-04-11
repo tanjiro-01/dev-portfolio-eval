@@ -57,10 +57,14 @@ const RadarBreakdown = ({ scores }) => {
         max: 100,
         ticks: { stepSize: 20, display: false },
         grid: {
-          color: isLight ? "rgba(71, 85, 105, 0.2)" : "rgba(255, 255, 255, 0.1)",
+          color: isLight
+            ? "rgba(71, 85, 105, 0.2)"
+            : "rgba(255, 255, 255, 0.1)",
         },
         angleLines: {
-          color: isLight ? "rgba(71, 85, 105, 0.2)" : "rgba(255, 255, 255, 0.1)",
+          color: isLight
+            ? "rgba(71, 85, 105, 0.2)"
+            : "rgba(255, 255, 255, 0.1)",
         },
         pointLabels: {
           color: isLight ? "#475569" : "#94a3b8",
@@ -71,10 +75,14 @@ const RadarBreakdown = ({ scores }) => {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: isLight ? "rgba(255, 255, 255, 0.95)" : "rgba(15, 23, 42, 0.9)",
+        backgroundColor: isLight
+          ? "rgba(255, 255, 255, 0.95)"
+          : "rgba(15, 23, 42, 0.9)",
         titleColor: isLight ? "#111827" : "#fff",
         bodyColor: isLight ? "#334155" : "#cbd5e1",
-        borderColor: isLight ? "rgba(148, 163, 184, 0.4)" : "rgba(255,255,255,0.1)",
+        borderColor: isLight
+          ? "rgba(148, 163, 184, 0.4)"
+          : "rgba(255,255,255,0.1)",
         borderWidth: 1,
       },
     },

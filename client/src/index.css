@@ -44,16 +44,25 @@ html.light [class*="border-slate-600"] {
 
 html.light [class*="text-slate-100"],
 html.light [class*="text-slate-200"] {
-  color: #111827 !important;
+  color: #0f172a !important;
 }
 
 html.light [class*="text-slate-300"] {
-  color: #374151 !important;
+  color: #1f2937 !important;
 }
 
 html.light [class*="text-slate-400"],
 html.light [class*="text-slate-500"] {
-  color: #6b7280 !important;
+  color: #334155 !important;
+}
+
+html.light [class*="text-amber-100"],
+html.light [class*="text-amber-200"],
+html.light [class*="text-amber-300"],
+html.light [class*="text-amber-400"],
+html.light [class*="text-stone-200"],
+html.light [class*="text-stone-300"] {
+  color: #7c5a34 !important;
 }
 
 html.light [class*="stroke-slate-800"] {
@@ -64,6 +73,11 @@ html.light [class*="shadow-xl"],
 html.light [class*="shadow-2xl"],
 html.light [class*="shadow-lg"] {
   box-shadow: 0 10px 30px rgba(30, 20, 10, 0.08) !important;
+}
+
+html.light .hero-gradient-title {
+  background-image: linear-gradient(to right, #374151, #6b7280) !important;
+  color: transparent !important;
 }
 
 /* Custom scrollbar for dark mode premium feel */

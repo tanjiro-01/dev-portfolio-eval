@@ -12,6 +12,60 @@ body {
   @apply bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-amber-500/30 selection:text-amber-100;
 }
 
+html.light body {
+  background: radial-gradient(
+    circle at top,
+    #f8f5ef 0%,
+    #f2ede4 45%,
+    #ebe5da 100%
+  );
+  color: #1f2937;
+}
+
+/* Light mode utility overrides for the existing dark-tailwind class usage */
+html.light [class*="bg-slate-950"] {
+  background-color: #f7f3ec !important;
+}
+
+html.light [class*="bg-slate-900"] {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+html.light [class*="bg-slate-800"] {
+  background-color: rgba(248, 244, 236, 0.95) !important;
+}
+
+html.light [class*="border-slate-900"],
+html.light [class*="border-slate-800"],
+html.light [class*="border-slate-700"],
+html.light [class*="border-slate-600"] {
+  border-color: rgba(163, 139, 102, 0.25) !important;
+}
+
+html.light [class*="text-slate-100"],
+html.light [class*="text-slate-200"] {
+  color: #111827 !important;
+}
+
+html.light [class*="text-slate-300"] {
+  color: #374151 !important;
+}
+
+html.light [class*="text-slate-400"],
+html.light [class*="text-slate-500"] {
+  color: #6b7280 !important;
+}
+
+html.light [class*="stroke-slate-800"] {
+  stroke: #d6c8b4 !important;
+}
+
+html.light [class*="shadow-xl"],
+html.light [class*="shadow-2xl"],
+html.light [class*="shadow-lg"] {
+  box-shadow: 0 10px 30px rgba(30, 20, 10, 0.08) !important;
+}
+
 /* Custom scrollbar for dark mode premium feel */
 ::-webkit-scrollbar {
   width: 8px;
@@ -25,4 +79,12 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-slate-700;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #c9b79c;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #b49f7f;
 }

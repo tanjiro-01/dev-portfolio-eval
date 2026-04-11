@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 const navLinkClass = (active) =>
   `px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
@@ -10,6 +11,7 @@ const navLinkClass = (active) =>
 const TopNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isLight, toggleTheme } = useTheme();
 
   const onHome = location.pathname === "/";
   const onCompare = location.pathname.startsWith("/compare");
@@ -31,15 +33,26 @@ const TopNav = () => {
         )}
       </div>
 
-      {!onHome && (
+      <div className="flex items-center gap-2">
         <button
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={toggleTheme}
           className="px-3 py-1.5 rounded-lg text-sm font-semibold text-slate-200 border border-slate-700 hover:border-amber-500/40 hover:text-amber-200 transition-colors"
+          title="Toggle light/dark mode"
         >
-          Back
+          {isLight ? "Dark" : "Light"}
         </button>
-      )}
+
+        {!onHome && (
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="px-3 py-1.5 rounded-lg text-sm font-semibold text-slate-200 border border-slate-700 hover:border-amber-500/40 hover:text-amber-200 transition-colors"
+          >
+            Back
+          </button>
+        )}
+      </div>
     </nav>
   );
 };

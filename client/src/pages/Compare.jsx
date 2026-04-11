@@ -20,6 +20,7 @@ import {
 import { fetchProfileReport } from "../api/http.js";
 import ReportLayout from "../components/ReportLayout.jsx";
 import TopNav from "../components/TopNav.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 ChartJS.register(
   RadialLinearScale,
@@ -77,6 +78,7 @@ const ResizeHandle = () => (
 );
 
 const Compare = () => {
+  const { isLight } = useTheme();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -247,21 +249,32 @@ const Compare = () => {
         min: 0,
         max: 100,
         ticks: { stepSize: 20, display: false },
-        grid: { color: "rgba(255, 255, 255, 0.1)" },
-        angleLines: { color: "rgba(255, 255, 255, 0.1)" },
+        grid: {
+          color: isLight ? "rgba(71, 85, 105, 0.2)" : "rgba(255, 255, 255, 0.1)",
+        },
+        angleLines: {
+          color: isLight ? "rgba(71, 85, 105, 0.2)" : "rgba(255, 255, 255, 0.1)",
+        },
         pointLabels: {
-          color: "#cbd5e1",
+          color: isLight ? "#334155" : "#cbd5e1",
           font: { family: "Inter", size: 12 },
         },
       },
     },
     plugins: {
-      legend: { position: "bottom", labels: { color: "#e2e8f0" } },
+      legend: {
+        position: "bottom",
+        labels: { color: isLight ? "#1f2937" : "#e2e8f0" },
+      },
       tooltip: {
-        backgroundColor: "rgba(15, 23, 42, 0.9)",
-        titleColor: "#fff",
-        bodyColor: "#cbd5e1",
-        borderColor: "rgba(255,255,255,0.1)",
+        backgroundColor: isLight
+          ? "rgba(255,255,255,0.95)"
+          : "rgba(15, 23, 42, 0.9)",
+        titleColor: isLight ? "#111827" : "#fff",
+        bodyColor: isLight ? "#334155" : "#cbd5e1",
+        borderColor: isLight
+          ? "rgba(148, 163, 184, 0.4)"
+          : "rgba(255,255,255,0.1)",
         borderWidth: 1,
       },
     },

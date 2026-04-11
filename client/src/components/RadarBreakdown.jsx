@@ -8,6 +8,7 @@ import {
   Legend,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 ChartJS.register(
   RadialLinearScale,
@@ -19,6 +20,9 @@ ChartJS.register(
 );
 
 const RadarBreakdown = ({ scores }) => {
+  const { isLight } = useTheme();
+
+  const accent = isLight ? "#8a6a45" : "#b08968";
   const data = {
     labels: ["Activity", "Quality", "Diversity", "Community", "Hiring"],
     datasets: [
@@ -31,12 +35,14 @@ const RadarBreakdown = ({ scores }) => {
           scores.community,
           scores.hiringReady,
         ],
-        borderColor: "#b08968",
-        backgroundColor: "rgba(176, 137, 104, 0.2)",
-        pointBackgroundColor: "#b08968",
+        borderColor: accent,
+        backgroundColor: isLight
+          ? "rgba(138, 106, 69, 0.18)"
+          : "rgba(176, 137, 104, 0.2)",
+        pointBackgroundColor: accent,
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "#b08968",
+        pointHoverBorderColor: accent,
         borderWidth: 2,
       },
     ],
@@ -50,10 +56,14 @@ const RadarBreakdown = ({ scores }) => {
         min: 0,
         max: 100,
         ticks: { stepSize: 20, display: false },
-        grid: { color: "rgba(255, 255, 255, 0.1)" },
-        angleLines: { color: "rgba(255, 255, 255, 0.1)" },
+        grid: {
+          color: isLight ? "rgba(71, 85, 105, 0.2)" : "rgba(255, 255, 255, 0.1)",
+        },
+        angleLines: {
+          color: isLight ? "rgba(71, 85, 105, 0.2)" : "rgba(255, 255, 255, 0.1)",
+        },
         pointLabels: {
-          color: "#94a3b8",
+          color: isLight ? "#475569" : "#94a3b8",
           font: { family: "Inter", size: 12 },
         },
       },
@@ -61,10 +71,10 @@ const RadarBreakdown = ({ scores }) => {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: "rgba(15, 23, 42, 0.9)",
-        titleColor: "#fff",
-        bodyColor: "#cbd5e1",
-        borderColor: "rgba(255,255,255,0.1)",
+        backgroundColor: isLight ? "rgba(255, 255, 255, 0.95)" : "rgba(15, 23, 42, 0.9)",
+        titleColor: isLight ? "#111827" : "#fff",
+        bodyColor: isLight ? "#334155" : "#cbd5e1",
+        borderColor: isLight ? "rgba(148, 163, 184, 0.4)" : "rgba(255,255,255,0.1)",
         borderWidth: 1,
       },
     },

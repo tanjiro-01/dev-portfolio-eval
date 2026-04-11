@@ -7,6 +7,7 @@ import {
   LinearScale,
   Tooltip,
 } from "chart.js";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -37,6 +38,8 @@ const getLanguageColor = (language) => {
 };
 
 const LanguageBars = ({ languages = [] }) => {
+  const { isLight } = useTheme();
+
   if (!languages.length) {
     return (
       <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
@@ -71,10 +74,10 @@ const LanguageBars = ({ languages = [] }) => {
         display: false,
       },
       tooltip: {
-        backgroundColor: "rgba(15, 23, 42, 0.9)",
-        titleColor: "#fff",
-        bodyColor: "#cbd5e1",
-        borderColor: "rgba(255,255,255,0.1)",
+        backgroundColor: isLight ? "rgba(255,255,255,0.95)" : "rgba(15, 23, 42, 0.9)",
+        titleColor: isLight ? "#111827" : "#fff",
+        bodyColor: isLight ? "#334155" : "#cbd5e1",
+        borderColor: isLight ? "rgba(148, 163, 184, 0.4)" : "rgba(255,255,255,0.1)",
         borderWidth: 1,
         callbacks: {
           label: (context) => `${context.parsed.x}% of repositories`,
@@ -85,9 +88,9 @@ const LanguageBars = ({ languages = [] }) => {
       x: {
         beginAtZero: true,
         max: 100,
-        grid: { color: "rgba(255, 255, 255, 0.05)" },
+        grid: { color: isLight ? "rgba(148, 163, 184, 0.25)" : "rgba(255, 255, 255, 0.05)" },
         ticks: {
-          color: "#94a3b8",
+          color: isLight ? "#475569" : "#94a3b8",
           callback: (value) => `${value}%`,
           font: { family: "Inter" }
         },
@@ -95,7 +98,7 @@ const LanguageBars = ({ languages = [] }) => {
       y: {
         grid: { display: false },
         ticks: {
-          color: "#cbd5e1",
+          color: isLight ? "#334155" : "#cbd5e1",
           font: { family: "Inter", weight: "500" }
         }
       }

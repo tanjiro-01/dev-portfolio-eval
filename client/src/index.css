@@ -80,6 +80,25 @@ html.light .hero-gradient-title {
   color: transparent !important;
 }
 
+/* Light mode CTA/readability fixes for stone/zinc gradient buttons */
+html.light button[class*="from-stone-700"][class*="to-zinc-600"] {
+  background-image: none !important;
+  background-color: #d7c5ab !important;
+  color: #111827 !important;
+  border-color: rgba(124, 90, 52, 0.4) !important;
+}
+
+html.light button[class*="from-stone-700"][class*="to-zinc-600"]:hover {
+  background-color: #ccb391 !important;
+  color: #0f172a !important;
+}
+
+html.light button:disabled {
+  background-color: #d1d5db !important;
+  color: #475569 !important;
+  border-color: rgba(148, 163, 184, 0.45) !important;
+}
+
 /* Custom scrollbar for dark mode premium feel */
 ::-webkit-scrollbar {
   width: 8px;

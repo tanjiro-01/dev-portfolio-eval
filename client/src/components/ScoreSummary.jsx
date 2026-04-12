@@ -51,7 +51,7 @@ const CircularProgress = ({ score, isLight, max = 100 }) => {
         </defs>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="score-ring-value text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-200 to-stone-300 leading-none">
+        <div className="score-ring-value text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-200 to-stone-300 leading-none">
           {score}
         </div>
         <div className="text-xs text-slate-500 uppercase tracking-[0.18em] mt-2">
